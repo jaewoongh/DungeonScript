@@ -1,0 +1,66 @@
+/* DUNGEONSCRIPT, a language for making first person dungeon crawler game
+ *	First off, commentations follow most common syntax: /* .. */ and // ..
+ *	Second, every code is case-insensitive
+ *	Below is a mockup code that I want it to be a real language
+ *	Best look with tab-width 2, tab indentation, not space.
+ */
+
+ 
+#### META														// Four sharps and a space start new *section*
+	title		Awesome Dungeon						// A *word* and whitespace are followed by its *value*
+	author	Jaewoong Hwang
+
+
+#### ASSETS
+	image		title_image		./assets/images/titleimage.png			// *Type* of asset, *name* of asset, *source uri* of the asset separated by whitespace
+	image		title_bg			./assets/images/titlebg.png
+	music		title_bgm			./assets/musics/titlebgm.ogg
+
+	image		player_image	./assets/images/player.png
+
+
+#### SCREENS
+	TITLE SCREEN:											// *Name of the screen*, colon, followed by newline and list of *layers*
+		title layer											// Each layers are separated by newline, first layer being the topmost layer
+		title menu											// Menu is treated as a layer, but acts different
+		title background layer
+		{{{title_bgm}}}									// Using {{{}}}, you can 'run' an asset
+
+	NAVIGATION SCREEN:
+		minimap layer
+		navi info layer
+		navigation layer								// "navigation layer" is a built-in layer that shows first person view of dungeon
+
+
+#### LAYERS
+	title layer:											// *Name of the layer*, colon, followed by newline and codes
+		title_image 		@@ c, 10				// Place title_image on *10% from top* and *horizontal center*
+		'Copyright 			@@ 5, -5				// Place a text on *5%* from left and *5%* from bottom. 'Small text, "Normal text, !Big text
+		"by {{author}}	@@ -5, c, right	// Text can contain meta or data value using {{}}, and it can be aligned *right* by explicitly writing it after the position
+
+	title background layer:
+		title_bg @@ 0, 0, left, top			// Anchor point is left-top for this image. Default value is center-center.
+
+	minimap layer:
+
+	navi info layer:
+
+
+#### MENUS
+	title menu:
+		"CONTINUE		@@ c, c		-> 
+		"NEW				@@ c, 55	->
+		"OPTION			@@ c, 60	->
+
+
+#### DATA														// Here you can make whatever data you think you will need
+	Player														// *Name of data*, white space, *value of data(optional)*
+		.title	Sir											// '.' makes property-like variable for a variable
+		.level	1												// Text and numbers can be value of variable
+		.img		{{player_image}}				// Using {{}} lets you access to existing data; in this case, uri for the image
+		.hp			10
+		.hpMax	10
+		.str		5
+		.def		2
+
+
