@@ -11,7 +11,7 @@ Design Concerns
 ---------------
 * It need to be easier and more intuitive than just javascript.
 * But at the same time it should not look way too exotic.
-* Entity component system?
+* Entity component system would do a great job.
 
 Development
 -----------
