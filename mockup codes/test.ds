@@ -1,9 +1,32 @@
-/* DUNGEONSCRIPT, a language for making first person dungeon crawler game
- *	First off, commentations follow most common syntax: /* .. */ and // ..
- *	Second, every code is case-insensitive
- *	Below is a mockup code that I want it to be a real language
- *	Best look with tab-width 2, tab indentation, not space.
- */
+/*                                                       
+		 ____                          _____         _     _   
+		|    \ _ _ ___ ___ ___ ___ ___|   __|___ ___|_|___| |_ 
+		|  |  | | |   | . | -_| . |   |__   |  _|  _| | . |  _|
+		|____/|___|_|_|_  |___|___|_|_|_____|___|_| |_|  _|_|  
+		              |___|                           |_|      
+		-- A language for retro first person dungeon crawler --
+
+	This is a mockup writing test to decide semantic and syntax of the language
+	General rules are:
+		* Commentations follow the most common syntax: /* .. */ and // ..
+		* Every code is case-insensitive
+		* Legal charactres for naming are [a-zA-Z0-9_-], not starting with numbers
+		* Syntax may differ section by section, each section starting with four sharps
+		* Positions and sizes are relative to screen width and height
+
+	Best look on tab indentation, width 2.
+
+	by Jaewoong Hwang, April 2014
+*/
+
+/*
+ ____ ____ ____ ____ ____ _________ ____ ____ 
+||T |||r |||i |||a |||l |||       |||# |||1 ||
+||__|||__|||__|||__|||__|||_______|||__|||__||
+|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|
+
+-- Let's just do this --> Alright, I'm out
+*/
 
  
 #### META														// Four sharps and a space start new *section*

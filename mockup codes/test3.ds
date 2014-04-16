@@ -1,0 +1,31 @@
+/*                                                       
+         ____                          _____         _     _   
+        |    \ _ _ ___ ___ ___ ___ ___|   __|___ ___|_|___| |_ 
+        |  |  | | |   | . | -_| . |   |__   |  _|  _| | . |  _|
+        |____/|___|_|_|_  |___|___|_|_|_____|___|_| |_|  _|_|  
+                      |___|                           |_|      
+        -- A language for retro first person dungeon crawler --
+
+    This is a mockup writing test to decide semantic and syntax of the language
+    General rules are:
+        * Commentations follow the most common syntax: /* .. */ and // ..
+        * Every code is case-insensitive
+        * Legal charactres for naming are [a-zA-Z0-9_-], not starting with numbers
+        * Syntax may differ section by section, each section starting with four sharps
+        * Positions and sizes are relative to screen width and height
+
+    Best look on space indentation, width 4.
+
+    by Jaewoong Hwang, April 2014
+*/
+
+/*
+ ____ ____ ____ ____ ____ _________ ____ ____                                         
+||T |||r |||i |||a |||l |||       |||# |||3 ||                                        
+||__|||__|||__|||__|||__|||_______|||__|||__||                                        
+|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|                                        
+
+-- Let's keep it very simple for the first version
+*/
+
+
