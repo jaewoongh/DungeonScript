@@ -153,9 +153,14 @@ PHASE-GAMEOVER:
 #### LEGENDS
 
 /* Set aliases characteristics for cells of maps.
-	 Aliases can be any of ascii characters.
-	 Usage: [alias]: [floor] [block] [ceiling] ~ [rule] ~ [more rules]
-	 '.' means nothing by default.		*/
+	 Aliases can be any of ascii characters other than colon.
+	 Usage: [alias]: [floor] [block] [ceiling] ~ [rule] ~ [more rules]	*/
+
+.: just-floor just-ceiling													// mundane floor
+#: blc-wall																					// mundane wall
+-: blc-door																					// mundane door
+=: blc-door ~ locked-door														// locked door
+$: just-floor blc-chest just-ceiling ~ open-chest		// hopefully treasure chest
 
 
 
