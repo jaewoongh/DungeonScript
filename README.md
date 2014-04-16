@@ -7,6 +7,12 @@ Overview
 DungeonScript is a language for making html5 retro first person dungeon crawler game, like Wizardry.  
 The project is inspired by [Stephen Lavelle](http://www.increpare.com/)'s [PuzzleScript](http://puzzlescript.net).
 
+Design Concerns
+---------------
+* It need to be easier and more intuitive than just javascript.
+* But at the same time it should not look way too exotic.
+* Entity component system?
+
 Development
 -----------
 Currently, I'm working on the project for the class Governing Dynamics of Software by [Ramsey](http://nas.sr).  
