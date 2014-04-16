@@ -128,12 +128,12 @@ battle-menu:
 
 PHASE-TITLE:
 	TITLE-SCREEN
-	rule-title
+	~ rule-title
 
 PHASE-NAVIGATION:
 	NAVIGATION-SCREEN
-	rule-
-	rule-navigation
+	~ rule-
+	~ rule-navigation
 
 PHASE-BATTLE:
 
@@ -146,7 +146,16 @@ PHASE-GAMEOVER:
 /* Rules are like coding-coding.
 	 You can manipulate variables with conditionals, and change game phases.		*/
 
+menu-to-cont:
+	load-saved-data								// Built-in command
 
+menu-to-new:
+
+menu-to-settings:
+
+locked-door:
+
+open-chest:
 
 
 
