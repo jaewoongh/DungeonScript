@@ -150,3 +150,20 @@ PHASE-GAMEOVER:
 
 
 
+#### LEGENDS
+
+/* Set aliases characteristics for cells of maps.
+	 Aliases can be any of ascii characters.
+	 Usage: [alias]: [floor] [block] [ceiling] ~ [rule] ~ [more rules]
+	 '.' means nothing by default.		*/
+
+
+
+
+#### MAPS
+
+/* Dungeon maps.
+*/
+
+
+
