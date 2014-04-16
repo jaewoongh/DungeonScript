@@ -8,7 +8,7 @@
 
     This is a mockup writing test to decide semantic and syntax of the language
     General rules are:
-        * Commentations follow the most common syntax: /* .. */ and // ..
+        * Commentations follow the most common syntax: /* .. */ but not // ..
         * Every code is case-insensitive
         * Legal charactres for naming are [a-zA-Z0-9_-], not starting with numbers
         * Syntax may differ section by section, each section starting with four sharps
@@ -20,12 +20,13 @@
 */
 
 /*
- ____ ____ ____ ____ ____ _________ ____ ____                                         
-||T |||r |||i |||a |||l |||       |||# |||3 ||                                        
-||__|||__|||__|||__|||__|||_______|||__|||__||                                        
-|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|                                        
+ ____ ____ ____ ____ ____ _________ ____ ____ 
+||T |||r |||i |||a |||l |||       |||# |||3 ||
+||__|||__|||__|||__|||__|||_______|||__|||__||
+|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|
 
 -- Let's keep it very simple for the first version
 */
 
 
+#### META

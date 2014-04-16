@@ -12,7 +12,8 @@ Development
 Currently, I'm working on the project for the class Governing Dynamics of Software by [Ramsey](http://nas.sr).  
 It just got started!
 
-04/14/2014: Made my mind to make this!
+* 04/14/2014: Made my mind to make this!
+* 04/16/2014: Decided to make it *very simple* for the first version
 
 Legal
 -----
