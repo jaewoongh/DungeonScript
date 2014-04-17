@@ -11,7 +11,6 @@
         * Commentations follow the most uncommon syntax: ☃ .. ☃ and ☃☃ ..
         * Every code is case-insensitive
         * Legal charactres for naming are [a-zA-Z0-9_-], not starting with numbers
-        * Syntax may differ section by section, each section starting with four sharps
         * Positions and sizes are relative to screen width and height
 
     Best look on space indentation, width 4.
@@ -23,49 +22,39 @@
 ||__|||__|||__|||__|||__|||_______|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|
 
--- Let's keep it very simple for the first version
+-- Let's implement ECS more explicitly
+
+    Implementation of ECS:
+        * There are THING, CHARM, and HABIT for ENTITY, COMPONENT, and SYSTEM respectedly.
+        * THINGs can be made with CHARMs
+        * HABITs are executed with matching CHARMs
 ☃
 
 
-#### META
+☃ FIRST STEP: Make THINGs with CHARMs
+  A THING is what is inside of curly braces.
+  THINGs are game objects -- something that is represented in game somehow.
+  Inside braces, CHARMs can be added with values using ':'.
+  CHARMs are properties of the THING.
+  CHARMs can be numbers, or text.
+  CHARMs without ':' are tags, and is equivalent to ': true'.   ☃
 
-☃ Some meta data for the whole game ☃
+{   meta,
+    title: "Trial Dungeon",
+    author: "Jaewoong Hwang",
+    webpage: "http://jaewoong.info"
+}
 
-title   Trial Dungeon
-author  Jaewoong Hwang
-webpage http://jaewoong.info
+{   player,
+    image-src: "./assets/images/player.png",
+    pos-x: 0,
+    pos-y: 0,
+    hp: 20,
+    hp-max: 20
+}
 
-
-#### ASSETS
-
-☃ Assets are things that need to be pre-loaded.
-  Usage: [type] [name of asset] [uri for asset]
-  Types: image    -- static image
-         music    -- just music
-         sound    -- sfx
-         block    -- sprite sheet for dungeon block
-         floor    -- sprite sheet for dungeon floor
-         ceiling  -- sprite sheet for dungeon ceiling ☃
-
-image    img-title       ./assets/images/titleimage.png
-image    img-gameover    ./assets/images/gameoverimage.png
-image    img-player      ./assets/images/player.png
-image    img-goblin      ./assets/images/monster_goblin.png
-image    img-zombie      ./assets/images/monster_zombie.png
-music    bgm-title       ./assets/musics/titlebgm.ogg
-music    bgm-dungeon     ./assets/musics/dungeonbgm1.ogg
-music    bgm-battle      ./assets/musics/battlebgm.ogg
-block    blc-wall        ./assets/blocks/wall.png
-block    blc-door        ./assets/blocks/door.png
-block    blc-chest       ./assets/blocks/chest.png
-floor    just-floor      ./assets/floors/just_floor.png
-ceiling  just-ceiling    ./assets/ceilings/just_ceiling.png
+{   }
 
 
-
-
-
-
-
-
+☃ SECOND STEP: Make HABITs
 
