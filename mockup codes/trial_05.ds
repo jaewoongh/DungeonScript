@@ -1,0 +1,125 @@
+       ___ ___      
+ |\/| |__   |   /\  
+ |  | |___  |  /~~\ 
+
+title = 'AwesomeDungeon'
+author = 'Jaewoong'
+tick = 200
+
+☃ ABOVE IS NOT ACCESSIBLE IN GAME LOGIC
+
+
+
+___              __   __  
+ |  |__| | |\ | / _` /__` 
+ |  |  | | | \| \__> .__/ 
+
+GAMEPHASE
+---------
+
+{ gamephase='titleScreen' }
+
+
+STASH
+-----
+
+{ weapon dagger damage=5 }
+{ weapon rusty-sword damage=4 }
+{ weapon spider-leg damage=3 }
+{ armor clothes defense=1 }
+{ armor spider-shell defence=2 }
+
+
+CHARACTERS
+----------
+
+{ player hp=50 hp-max=50 weapon=@dagger armor=@clothes gold=0 }
+
+{ monster spider hp=10 hp-max=10 weapon=@spider-leg armor=@spider-shell gold=5 }
+{ monster goblin hp=20 hp-max=20 weapon=@rusty-sword armor=@clothes gold=10 }
+
+
+
+           ___      
+ |\/|  /\   |  |__| 
+ |  | /~~\  |  |  | 
+
+dealDamage = .weapon.damage * random(0.9, 1.1)
+cutDamage = .armor.defense * random(0.9, 1.1)
+
+
+
+ __              ___ 
+/ _`  /\   |\/| |__  
+\__> /~~\  |  | |___ 
+
+☃ Sending message is valid in next tick, while changing tag value is valid immediately
+
+BATTLE
+------
+
+gamephase='battle-myturn' {
+	input='action' {
+		player {
+			enemy battling <- { hit=#dealDamage }
+			enemy battling <- { shake }
+		}
+	}
+	input='cancel' {
+		player <- { escapeDice=random(0, 1) }
+	}
+}
+
+gamephase='battle-enemyturn' {
+	enemy battling {
+		player <- { hit=#dealDamage }
+		player <- { shake }
+	}
+}
+
+hit player {
+	.hp = .hp - .hit + #cutDamage
+	.hit = untag
+	gamephase <- { gamephase='battle-enemyturn' }
+}
+
+hit enemy {
+	.hp = .hp - .hit + #cutDamage
+	.hit = untag
+	gamephase <- { gamephase='battle-myturn' }
+}
+
+shake {
+	
+}
+
+hp<0 player {
+	.hp = 0
+	gamephase <- { gamephase='game-over' }
+}
+
+hp<0 enemy battling {
+	.hp = 0
+	.dead
+	gamephase <- { gamephase='navigation' }
+	player <- { goldReward=.gold }
+}
+
+dead enemy { .hp = .hp-max }
+
+goldReward {
+	.gold = .gold + .goldReward
+	.goldReward = untag
+}
+
+escapeDice<0.5 { gamephase='battle-enemyturn' }
+escapeDice>=0.5 { gamephase='navigation' }
+
+
+NAVIGATION
+----------
+
+gamephase='navigation' {
+	input='up' { position <- { gofoward } }
+	input='left' { position <- { turnleft } }
+}

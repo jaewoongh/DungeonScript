@@ -1,0 +1,121 @@
+☃                                                       
+         ____                          _____         _     _   
+        |    \ _ _ ___ ___ ___ ___ ___|   __|___ ___|_|___| |_ 
+        |  |  | | |   | . | -_| . |   |__   |  _|  _| | . |  _|
+        |____/|___|_|_|_  |___|___|_|_|_____|___|_| |_|  _|_|  
+                      |___|                           |_|      
+        -- A language for retro first person dungeon crawler --
+
+    This is a mockup writing test to decide semantic and syntax of the language
+    General rules are:
+        * Commentations follow the most uncommon syntax: ☃ .. ☃ and ☃☃ ..
+        * Every code is case-insensitive
+        * Legal charactres for naming are [a-zA-Z0-9_-], not starting with numbers
+        * Positions and sizes are relative to screen width and height
+
+    Best look on space indentation, width 4.
+
+    by Jaewoong Hwang, April 2014
+
+ ____ ____ ____ ____ ____ _________ ____ ____ 
+||T |||r |||i |||a |||l |||       |||# |||4 ||
+||__|||__|||__|||__|||__|||_______|||__|||__||
+|/__\|/__\|/__\|/__\|/__\|/_______\|/__\|/__\|
+
+-- Let's go simpler first, and then maybe ECS
+-- I'm not making a beautiful language, but an easy language!
+
+☃
+
+
+☃ CHARACTERS ☃
+
+player {
+    img:    './assets/images/player/player.png'
+    hp:     50
+    hp-max: 50
+    weapon: @dagger
+    armor:  @clothes
+    gold:   0
+}
+
+mon-spider {
+    img:    './assets/images/monsters/spider.png'
+    hp:     10
+    hp-max: 10
+    weapon: @spider-legs
+    armor:  @spider-shell
+    gold:   5
+}
+
+mon-goblin {
+    img:    './assets/images/monsters/goblin.png'
+    hp:     20
+    hp-max: 20
+    weapon: @rusty-sword
+    armor:  @clothes
+    gold:   10
+}
+
+
+☃ ITEMS ☃
+
+dagger {
+    damage: 4
+}
+
+clothes {
+    defense: 1
+}
+
+spider-legs {
+    damage: 3
+}
+
+spider-shell {
+    defense: 2
+}
+
+dagger {
+    damage: 4
+}
+
+clothes {
+    defense: 1
+}
+
+
+☃ BATTLE ☃
+
+battle-give with p, m {
+    m.hp: m.hp - p.weapon.damage + m.armor.defense + random between -2, 2
+    if m.hp <= 0 run battle-win with m
+    else run battle-take with p, m
+}
+
+battle-take with p, m {
+    p.hp: p.hp - m.weapon.damage + p.armor.defense + random between -2, 2
+    if p.hp <= 0 run battle-lose
+}
+
+battle-win with p, m {
+    p.gold: p.gold + m.gold
+    run phase-change with 'navi'
+}
+
+battle-lose {
+    run phase-change with 'gameover'
+}
+
+
+☃ GAME PHASE ☃
+
+phase-change with phase {
+    when phase
+        is 'navi' {
+            show 
+        }
+        is 'gameover' {
+
+        }
+}
