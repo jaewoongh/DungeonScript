@@ -1,0 +1,168 @@
+META
+====
+
+☃ Meta data is a thing that has 'meta' tag
+
+{ meta,
+  title: "Awesome Dungeon",
+  author: "Jaewoong",
+  tick: 200,
+  target-width: 800,
+  target-height: 600,
+  font: "./assets/font/Volter__28Goldfish_29.ttf"
+}
+
+
+
+GLOBAL THINGS
+=============
+
+{ gamephase: "title-menu",
+  prevphase: nothing,
+  changephase: nothing
+}
+
+gamephase changephase {
+  ☃ '.' means 'this', which is the thing resulted from query
+  .prevphase: .gamephase,
+  .gamephase: .changephase
+}
+
+{ icon-action,
+  image: "./assets/images/icons/action.png",
+  valign-center, halign-center
+}
+
+{ icon-cancel,
+  image: "./assets/images/icons/cancel.png",
+  valign-center, halign-center
+}
+
+{ icon-up,
+  image: "./assets/images/icons/up.png",
+  valign-center, halign-center
+}
+
+{ icon-down,
+  image: "./assets/images/icons/down.png",
+  valign-center, halign-center
+}
+
+{ icon-left,
+  image: "./assets/images/icons/left.png",
+  valign-center, halign-center
+}
+
+{ icon-right,
+  image: "./assets/images/icons/right.png",
+  valign-center, halign-center
+}
+
+
+
+TITLE MENU
+==========
+
+{ title-background,
+  image: "./assets/images/title/background.png",
+  valign-center, halign-center,
+  x: 0.5, y: 0.5
+}
+
+{ title-title,
+  image: "./assets/images/title/title.png",
+  valign-center, halign-center,
+  x: 0.5, y: 0.3
+}
+
+{ title-message,
+  text: "PRESS ACTION KEY",
+  font-size: 0.1,
+  font-color: #FFFFFF,
+  valign-center, halign-center,
+  x: 0.5, y: 0.7
+}
+
+gamephase="title-menu" {
+  title-background <- { show },
+  title-title <- { show },
+  title-message <- { show }
+}
+
+☃ 'key' tag is automatically added to everything
+gamephase="title-menu" key="action" {
+  .gamephase: "loadgame"
+}
+
+gamephase="loadgame" {
+  .gamephase: "newgame",
+
+  ☃ gamephase will be overrided when there's loaddata
+  ☃ overriding gamedata overwrites every data
+  gamedata loaddata { .gamedata <- { .loaddata } }
+}
+
+gamephase="newgame" {
+  title-background <- { show: untag },
+  title-title <- { show: untag },
+  title-message <- { show: untag },
+
+  camera <- { x: 1, y: 1, heading: "south" }
+  .gamephase: "town"
+}
+
+
+
+TOWN
+====
+
+{ town-background,
+  image: "./assets/images/town/background.png",
+  valign-center, halign-center,
+  x: 0.5, y: 0.5
+}
+
+{ town-save,
+  text: "REST & SAVE",
+  font-size: 0.1,
+  font-color: #FFFFFF,
+  valign-center, halign-left,
+  x: 0.3, y: 0.6
+}
+
+{ town-gotodungeon,
+  text: "GO INTO DUNGEON",
+  font-size: 0.1,
+  font-color: #FFFFFF,
+  valign-center, halign-left,
+  x: 0.3, y: 0.8
+}
+
+gamephase="town" {
+  town-background <- { show },
+  town-save <- { show },
+  town-gotodungeon <- { show },
+  icon-up <- { show, x: 0.2, y: 0.6 },
+  icon-down <- { show, x: 0.2, y: 0.8 },
+
+  .key="up" {
+    gamedata <- { save, gamedata <- { save: untag } }
+  },
+
+  .key="down" {
+    town-background <- { show: untag },
+    town-save <- { show: untag },
+    town-gotodungeon <- { show: untag },
+    icon-up <- { show: untag },
+    icon-down <- { show: untag },
+    .gamephase: "navigation"
+  }
+}
+
+
+
+NAVIGATION
+==========
+
+{ 
+}

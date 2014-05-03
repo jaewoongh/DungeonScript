@@ -1,0 +1,98 @@
+<script src="../js/jquery.js"></script>
+<script src="../js/jqconsole.js"></script>
+<script src="../js/sugar.js"></script>
+<script src="../js/peg.js"></script>
+<script src="../js/plt.js"></script>
+
+<title>Grammar Test for DungeonScript</title>
+
+<grammar>
+start       = p:(thingDef / queryAndDo)+            { return p.join('') }
+
+<!-- Thing Definition //-->
+thingDef    = '{' space def:(charmAssign / charmTag)+ '}' space
+                                                    { return 'things.push({'+def.join(',')+'});' }
+charmTag    = t:text space                          { return t+':true' }
+charmAssign = t:text space ':' space v:(atRefer/value) space
+                                                    { return t+':'+v }
+
+<!-- Query Grammar //-->
+queryAndDo  = q:query+ '{' space d:(putCharm / modify)+ '}' space
+                                                    { return 'queryThings({'+q+'},function(there){'+d.join(';')+'});' }
+query       = conditionQ / tagQ
+conditionQ  = t:text space '=' space v:value space  { return t+':'+v }
+tagQ        = t:text space                          { return t+':true' }
+
+modify      = charmModify / tagModify
+putCharm    = t:text '<-' space d:thingModify       { return 'queryThings(this,{'+t+':true},function(there){'+d+'});' }
+
+tagModify   = r:refer space                         { return r+'=true' }
+charmModify = r:refer space ':' space v:(value/refer) space
+                                                    { return r+'='+v }
+thingModify = '{' space def:(charmModify / tagModify)+ '}' space
+                                                    { return '{'+def.join(';')+'}' }
+
+refer       = dotRefer / localRefer
+dotRefer    = '.' t:text                            { return 'this.'+t }
+localRefer  = t:text                                { return 'there.'+t }
+atRefer     = '@' t:text                            { return 'something({'+t+'})' }
+
+<!-- Basic Literals //-->
+value       = color / string / const / bool / number
+
+color       = '#' c:(sixColor / threeColor) space   { return '#'+c }
+threeColor  = a:colChar b:colChar c:colChar         { return a+b+c }
+sixColor    = a:threeColor b:threeColor             { return a+b }
+colChar     = [a-fA-F0-9]
+
+string      = doubleQuot / singleQuot
+doubleQuot  = '"' s:(text / dqText)+ '"' space      { return "'"+s+"'" }
+singleQuot  = "'" s:(text / sqText)+ "'" space      { return "'"+s+"'" }
+text        = t:legalChar+ space                    { return t.join('') }
+legalChar   = [a-zA-Z0-9_\-]
+dqText      = t:textCharDbl+ space                  { return t.join('') }
+sqText      = t:textCharSgl+ space                  { return t.join('') }
+textCharDbl = [^\n""]
+textCharSgl = [^\n'']
+
+const       = c:'remove'                            { return "'__"+c+"__'" }
+
+bool        = 'true' / 'false'
+
+number      = real / integer
+integer     = s:'-'? d:digit+ space                 { return parseInt(s + d.join('')) }
+real        = s:'-'? i:digit* '.' f:digit+ space    { return parseFloat(s + i.join('') + '.' + f.join('')) }
+digit       = [0123456789]
+space       = [ ,\n]*
+SPACE       = [ ,\n]+ / !.
+</grammar>
+
+<h3>Thing Definition</h3>
+<code>{ player,
+  name: "Jaewoong",
+  hp: 50,
+  hp-max: 50,
+  color: #ad322f
+}
+</code>
+
+<h3>Query and Do</h3>
+<code>player hp=30 {
+  .hp: 20,
+  enemy <- { whatever: 50, asdf: .hp },
+  qwer <- { asdf: remove }
+}
+</code>
+
+<h3>Test Longer</h3>
+<code>{ meta,
+  title: "Awesome Dungeon",
+  author: "Jaewoong",
+  tick: 200,
+  target-width: 800,
+  target-height: 600,
+  font: "./assets/font/Volter__28Goldfish_29.ttf"
+}
+
+{ player hp:50 hp-max:50 weapon:@dagger armor:@clothes gold:0 }
+</code>
