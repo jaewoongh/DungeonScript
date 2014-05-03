@@ -15,6 +15,7 @@ thingDef    = '{' space def:(charmAssign / charmTag)+ '}' space
 charmTag    = t:text space                          { return t+':true' }
 charmAssign = t:text space ':' space v:(atRefer/value) space
                                                     { return t+':'+v }
+atRefer     = '@' t:text                            { return 'something({'+t+'})' }
 
 <!-- Query Grammar //-->
 queryAndDo  = q:query+ '{' space d:(putCharm / modify)+ '}' space
@@ -35,7 +36,6 @@ thingModify = '{' space def:(charmModify / tagModify)+ '}' space
 refer       = dotRefer / localRefer
 dotRefer    = '.' t:text                            { return 'this.'+t }
 localRefer  = t:text                                { return 'there.'+t }
-atRefer     = '@' t:text                            { return 'something({'+t+'})' }
 
 <!-- Basic Literals //-->
 value       = color / string / const / bool / number
