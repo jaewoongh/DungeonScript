@@ -1,8 +1,8 @@
-<script src="../js/jquery.js"></script>
-<script src="../js/jqconsole.js"></script>
-<script src="../js/sugar.js"></script>
-<script src="../js/peg.js"></script>
-<script src="../js/plt.js"></script>
+<script src="../public/js/jquery.js"></script>
+<script src="../public/js/jqconsole.js"></script>
+<script src="../public/js/sugar.js"></script>
+<script src="../public/js/peg.js"></script>
+<script src="../public/js/plt.js"></script>
 
 <title>Grammar Test for DungeonScript</title>
 
@@ -15,7 +15,7 @@ thingDef    = '{' space def:(charmAssign / charmTag)+ '}' space
 charmTag    = t:text space                          { return t+':true' }
 charmAssign = t:text space ':' space v:(atRefer/value) space
                                                     { return t+':'+v }
-atRefer     = '@' t:text                            { return 'something({'+t+'})' }
+atRefer     = '@' q:query                           { return 'function(){return queryThings({'+q+'});}' }
 
 <!-- Query Grammar //-->
 queryAndDo  = q:query+ '{' space d:(putCharm / modify)+ '}' space
@@ -38,7 +38,12 @@ dotRefer    = '.' t:text                            { return 'this.'+t }
 localRefer  = t:text                                { return 'there.'+t }
 
 <!-- Basic Literals //-->
-value       = color / string / const / bool / number
+block       = '(' v:value ')'                       { return '('+v+')' }
+value       = a:(literal / block) b:(mathSign (literal / block))*
+                                                    { return a+b.join('').replace(/,/g, '') }
+
+literal     = color / string / const / bool / number
+mathSign    = [-+*/]
 
 color       = '#' c:(sixColor / threeColor) space   { return '#'+c }
 threeColor  = a:colChar b:colChar c:colChar         { return a+b+c }
@@ -60,8 +65,8 @@ const       = c:'remove'                            { return "'__"+c+"__'" }
 bool        = 'true' / 'false'
 
 number      = real / integer
-integer     = s:'-'? d:digit+ space                 { return parseInt(s + d.join('')) }
-real        = s:'-'? i:digit* '.' f:digit+ space    { return parseFloat(s + i.join('') + '.' + f.join('')) }
+integer     = s:'-'? d:digit+ space                 { return parseInt(s?s:'' +d.join(''), 10) }
+real        = s:'-'? i:digit* '.' f:digit+ space    { return parseFloat(s?s:'' +i.join('')+'.'+f.join(''), 10) }
 digit       = [0123456789]
 space       = [ ,\n]*
 SPACE       = [ ,\n]+ / !.
@@ -70,9 +75,10 @@ SPACE       = [ ,\n]+ / !.
 <h3>Thing Definition</h3>
 <code>{ player,
   name: "Jaewoong",
-  hp: 50,
-  hp-max: 50,
-  color: #ad322f
+  hp: 50+5*3,
+  hp-max: (50-313.3+(3/3))*5,
+  color: #ad322f,
+  weapon: @longsword
 }
 </code>
 

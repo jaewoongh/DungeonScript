@@ -2,38 +2,39 @@
 <h3>Coding Page</h3>
 <p>Note that you can drag bottom-right corner of the textbox to resize it freely</p>
 </div>
-<form action="/create/interprete" method="POST">
+<form action="/create" method="POST">
 	<div id="area-meta" class="container" style="padding:0px; margin:10px">
 		<h4>META</h4>
 		<div class="col-md-8" style="padding:0px">
-			<textarea id="txt-meta" name="meta" style="width:100%; max-width:100%; height:80px"></textarea>
+			<textarea id="txt-meta" name="meta" style="width:100%; max-width:100%; height:80px">{{meta}}</textarea>
 		</div>
-		<div class="col-md-4">
-			<p id="console-meta" class="col-md-4"></p>
+		<div class="col-md-4" style="padding:0px 5px">
+			{{c_meta}}
 		</div>
 	</div>
 
 	<div id="area-things" class="container" style="padding:0px; margin:10px">
 		<h4>THINGS</h4>
 		<div class="col-md-8" style="padding:0px">
-			<textarea id="txt-things" name="things"  style="width:100%; max-width:100%; height:160px"></textarea>
+			<textarea id="txt-things" name="things"  style="width:100%; max-width:100%; height:160px">{{things}}</textarea>
 		</div>
-		<div class="col-md-4">
-			<p id="console-things" class="col-md-4"></p>
+		<div class="col-md-4" style="padding:0px 5px">
+			{{c_things}}
 		</div>
 	</div>
 
 	<div id="area-gameloop" class="container" style="padding:0px; margin:10px">
 		<h4>GAME LOOP</h4>
 		<div class="col-md-8" style="padding:0px">
-			<textarea id="txt-gameloop" name="gameloop"  style="width:100%; max-width:100%; height:160px"></textarea>
+			<textarea id="txt-gameloop" name="gameloop"  style="width:100%; max-width:100%; height:160px">{{gameloop}}</textarea>
 		</div>
-		<div class="col-md-4">
-			<p id="console-gameloop" class="col-md-4"></p>
+		<div class="col-md-4" style="padding:0px 5px">
+			{{c_gameloop}}
 		</div>
 	</div>
 
 	<div id="area-submit" class="container" style="padding:0px; margin:10px">
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Interprete!</button>
+		<button class="btn btn-lg btn-primary btn-block" type="submit" name="interprete" value="true">Interprete!</button>
+		<button class="btn btn-sm btn-warning btn-block" type="submit" name="compile" value="true">COMPILE & GO</button>
 	</div>
 </form>

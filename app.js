@@ -34,16 +34,22 @@ app.get('/create', function(req, res) {
     res.render('create');
 });
 
-app.post('/create/interprete', function(req, res) {
+app.post('/create', function(req, res) {
     var data = req.body;
     var meta = data.meta;
     var things = data.things;
     var gameloop = data.gameloop;
 
-    PEG.parseThings(things, function(parsed) {
-        console.log(parsed);
-    });
-    res.redirect('/create');
+    var parsedMeta = PEG.parseMeta(meta);
+    var parsedThings = PEG.parseThings(things);
+    var parsedGameloop = PEG.parseGameloop(gameloop);
+
+    if(data.interprete) {
+        res.render('create', {
+            meta:   meta || '', things:   things || '', gameloop:   gameloop || '',
+            c_meta: parsedMeta, c_things: parsedThings, c_gameloop: parsedGameloop});
+    } else if(data.compile) {
+    }
 });
 
 // Launch the app
