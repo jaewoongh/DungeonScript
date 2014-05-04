@@ -49,6 +49,7 @@ app.post('/create', function(req, res) {
             meta:   meta || '', things:   things || '', gameloop:   gameloop || '',
             c_meta: parsedMeta, c_things: parsedThings, c_gameloop: parsedGameloop});
     } else if(data.compile) {
+        res.render('compile', { meta: parsedMeta, things: parsedThings, gameloop: parsedGameloop });
     }
 });
 
