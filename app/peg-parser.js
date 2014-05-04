@@ -2,7 +2,7 @@
 var PEG             = require('pegjs');
 
 // Grammar
-var commonGrammar   = "\
+var commonGrammar   = " \
 query       = conditionQ / tagQ                                                                                     \
 conditionQ  = t:text space s:compareSign space v:value space                                                        \
                                                     { return t+':function(a){return a'+s+v+';}' }                   \
@@ -12,7 +12,7 @@ value       = a:(literal / block) b:(mathSign (literal / block))*               
 block       = '(' v:value ')'                       { return '('+v+')' }                                            \
 literal     = color / string / const / bool / number                                                                \
 mathSign    = [-+*/]                                                                                                \
-compareSign = '=' / '!=' / '>=' / '<=' / '>' / '<'
+compareSign = '=' / '!=' / '>=' / '<=' / '>' / '<'                                                                  \
 color       = '#' c:(sixColor / threeColor) space   { return '#'+c }                                                \
 threeColor  = a:colChar b:colChar c:colChar         { return a+b+c }                                                \
 sixColor    = a:threeColor b:threeColor             { return a+b }                                                  \
