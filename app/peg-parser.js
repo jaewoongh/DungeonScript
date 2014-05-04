@@ -39,8 +39,8 @@ SPACE       = [ ,\\r\\n]+ / !.                                                  
 
 var parser4meta     = PEG.buildParser(" \
 start       = def:(charmAssign / charmTag)+ space   { return 'queryThings(this,{meta:true},function(there){'+def.join('')+'});' }     \
-charmTag    = t:text space                          { return t+':true' }                                    \
-charmAssign = t:text space ':' space v:value space  { return t+':'+v }                                      \
+charmTag    = t:text space                          { return 'there.'+t+'=true' }                                    \
+charmAssign = t:text space ':' space v:value space  { return 'there.'+t+'='+v }                                      \
 "+commonGrammar);
 
 var parser4things   = PEG.buildParser(" \
@@ -56,7 +56,7 @@ atRefer     = '@' q:query                           { return 'function(){return 
 var parser4gameloop = PEG.buildParser(" \
 start       = p:queryAndDo*                         { return p.join('') }                                               \
 queryAndDo  = q:query+ '{' space d:(putCharm / modify)+ '}' space                                                       \
-                                                    { return 'queryThings({'+q+'},function(){'+d.join(';')+'});' } \
+                                                    { return 'queryThings({'+q+'},function(){'+d.join(';')+'});' }      \
 modify      = charmModify / tagModify                                                                                   \
 putCharm    = t:text '<-' space d:thingModify       { return 'queryThings(this,{'+t+':true},function(there){'+d+'});' } \
 tagModify   = r:refer space                         { return r+'=true' }                                                \
