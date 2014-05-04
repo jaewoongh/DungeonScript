@@ -56,7 +56,7 @@ atRefer     = '@' q:query                           { return 'function(){return 
 var parser4gameloop = PEG.buildParser(" \
 start       = p:queryAndDo*                         { return p.join('') }                                               \
 queryAndDo  = q:query+ '{' space d:(putCharm / modify)+ '}' space                                                       \
-                                                    { return 'queryThings({'+q+'},function(there){'+d.join(';')+'});' } \
+                                                    { return 'queryThings({'+q+'},function(){'+d.join(';')+'});' } \
 modify      = charmModify / tagModify                                                                                   \
 putCharm    = t:text '<-' space d:thingModify       { return 'queryThings(this,{'+t+':true},function(there){'+d+'});' } \
 tagModify   = r:refer space                         { return r+'=true' }                                                \

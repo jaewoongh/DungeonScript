@@ -1,6 +1,115 @@
 <script>
 	var things = [];
 
+	var queryThings = function() {
+		switch(arguments.length) {
+			case 1:
+				// queryThings({ query-object })
+				// For use of: @thing
+				var query = arguments[0];
+				if(typeof query !== 'object') throw('Invalid argument for queryThings(): expected one object');
+				var result = [];
+				for(var i in things) {
+					if(!things.hasOwnProperty(i)) continue;
+					result.push(things[i]);
+					for(var key in query) {
+						if(!query.hasOwnProperty(key)) continue;
+						if(!things[i][key]) {
+							result.pop();
+							break;
+						}
+					}
+				}
+				if(result.length === 1) return result[0];
+				return result;
+				break;
+
+			case 2:
+				// queryThings( { query-object }, callback-function )
+				// For use of: charm=query { manipulation }
+				var query = arguments[0];
+				if(typeof query !== 'object') throw('Invalid argument for queryThings(): expected object for the first argument');
+				var callback = arguments[1];
+				if(typeof callback !== 'function') throw('Invalid argument for queryThings(): expected function for the second argument');
+				var result = [];
+				for(var i in things) {
+					if(!things.hasOwnProperty(i)) continue;
+					result.push(things[i]);
+					for(var key in query) {
+						if(!query.hasOwnProperty(key)) continue;
+						if(!things[i][key]) {
+							result.pop();
+							break;
+						} else {
+							// Execute comparison
+							if(typeof query[key] === 'function') {
+								if(!query[key](things[i][key])) {
+									result.pop();
+									break;
+								}
+							} else {
+								if(things[i][key] !== query[key]) {
+									result.pop();
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				// Call callback function with relavant scope
+				for(var i = 0; i < result.length; i++) {
+					callback.call(result[i]);
+				}
+				break;
+
+			case 3:
+				// queryThings( former-scope, { query-object }, callback-function )
+				// For use of: target <- { manipulation }
+				var fscope = arguments[0];
+				if(typeof fscope !== 'object') throw('Invalid argument for queryThings(): expected object for the first argument');
+				var query = arguments[1];
+				if(typeof query !== 'object') throw('Invalid argument for queryThings(): expected object for the second argument');
+				var callback = arguments[2];
+				if(typeof callback !== 'function') throw('Invalid argument for queryThings(): expected function for the third argument');
+
+				var result = [];
+				for(var i in things) {
+					if(!things.hasOwnProperty(i)) continue;
+					result.push(things[i]);
+					for(var key in query) {
+						if(!query.hasOwnProperty(key)) continue;
+						if(!things[i][key]) {
+							result.pop();
+							break;
+						} else {
+							// Execute comparison
+							if(typeof query[key] === 'function') {
+								if(!query[key](things[i][key])) {
+									result.pop();
+									break;
+								}
+							} else {
+								if(things[i][key] !== query[key]) {
+									result.pop();
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				// Call callback function with relavant scope
+				for(var i = 0; i < result.length; i++) {
+					callback.call(fscope, result[i]);
+				}
+				break;
+
+			default:
+				throw('Invalid number of parameters for queryThings()');
+		}
+	};
+
 	var __start = function() {
 		var meta = {
 			meta:			true,
