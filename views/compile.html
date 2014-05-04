@@ -11,12 +11,11 @@
 				var query = arguments[0];
 				if(typeof query !== 'object') throw('Invalid argument for queryThings(): expected one object');
 				var result = [];
-				for(var i in things) {
-					if(!things.hasOwnProperty(i)) continue;
+				for(var i = 0; i < things.length; i++) {
 					result.push(things[i]);
 					for(var key in query) {
 						if(!query.hasOwnProperty(key)) continue;
-						if(!things[i][key]) {
+						if((things[i][key] !== undefined) === (query[key] === undefined)) {
 							result.pop();
 							break;
 						}
@@ -34,15 +33,14 @@
 				var callback = arguments[1];
 				if(typeof callback !== 'function') throw('Invalid argument for queryThings(): expected function for the second argument');
 				var result = [];
-				for(var i in things) {
-					if(!things.hasOwnProperty(i)) continue;
+				for(var i = 0; i < things.length; i++) {
 					result.push(things[i]);
 					for(var key in query) {
 						if(!query.hasOwnProperty(key)) continue;
-						if(!things[i][key]) {
+						if((things[i][key] !== undefined) === (query[key] === undefined)) {
 							result.pop();
 							break;
-						} else {
+						} else if(things[i][key]) {
 							// Execute comparison
 							if(typeof query[key] === 'function') {
 								if(!query[key](things[i][key])) {
@@ -76,15 +74,14 @@
 				if(typeof callback !== 'function') throw('Invalid argument for queryThings(): expected function for the third argument');
 
 				var result = [];
-				for(var i in things) {
-					if(!things.hasOwnProperty(i)) continue;
+				for(var i = 0; i < things.length; i++) {
 					result.push(things[i]);
 					for(var key in query) {
 						if(!query.hasOwnProperty(key)) continue;
-						if(!things[i][key]) {
+						if((things[i][key] !== undefined) === (query[key] === undefined)) {
 							result.pop();
 							break;
-						} else {
+						} else if(things[i][key]) {
 							// Execute comparison
 							if(typeof query[key] === 'function') {
 								if(!query[key](things[i][key])) {
@@ -128,12 +125,23 @@
 	};
 
 	var __loop = function() {
+		// Do loop
 		{{{ gameloop }}}
+
+		// Do premade behaviors
+		for(var i = 0; i < things.length; i++) {
+			for(var key in things[i]) {
+				if(!things[i].hasOwnProperty(key)) continue;
+				switch(things[i][key]) {
+				}
+			}
+		}
 
 		// Do todo
 		for(var i = 0; i < todo.length; i++) {
 			todo[i]();
 		}
+		todo = [];
 	};
 
 	window.onload = function() {
