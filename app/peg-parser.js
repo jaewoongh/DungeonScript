@@ -4,13 +4,15 @@ var PEG             = require('pegjs');
 // Grammar
 var commonGrammar   = "\
 query       = conditionQ / tagQ                                                                                     \
-conditionQ  = t:text space '=' space v:value space  { return t+':'+v }                                              \
+conditionQ  = t:text space s:compareSign space v:value space                                                        \
+                                                    { return t+':function(a){return a'+s+v+';}' }                   \
 tagQ        = t:text space                          { return t+':true' }                                            \
 value       = a:(literal / block) b:(mathSign (literal / block))*                                                   \
                                                     { return a+b.join('').replace(/,/g, '') }                       \
 block       = '(' v:value ')'                       { return '('+v+')' }                                            \
 literal     = color / string / const / bool / number                                                                \
 mathSign    = [-+*/]                                                                                                \
+compareSign = '=' / '!=' / '>=' / '<=' / '>' / '<'
 color       = '#' c:(sixColor / threeColor) space   { return '#'+c }                                                \
 threeColor  = a:colChar b:colChar c:colChar         { return a+b+c }                                                \
 sixColor    = a:threeColor b:threeColor             { return a+b }                                                  \
