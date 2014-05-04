@@ -38,7 +38,7 @@ SPACE       = [ ,\\r\\n]+ / !.                                                  
 ";
 
 var parser4meta     = PEG.buildParser(" \
-start       = def:(charmAssign / charmTag)+ space   { return 'queryThings(this,{meta:true},function(there){'+def.join('')+'});' }     \
+start       = def:(charmAssign / charmTag)+ space   { return 'queryThings(this,{meta:true},function(there){'+def.join(';')+';});' }     \
 charmTag    = t:text space                          { return 'there.'+t+'=true' }                                    \
 charmAssign = t:text space ':' space v:value space  { return 'there.'+t+'='+v }                                      \
 "+commonGrammar);
