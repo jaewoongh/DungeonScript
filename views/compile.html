@@ -1,5 +1,7 @@
 <script>
 	var things = [];
+	var todo = [];
+	var loopTimer;
 
 	var queryThings = function() {
 		switch(arguments.length) {
@@ -122,10 +124,16 @@
 		});
 		{{{ meta }}}
 		{{{ things }}}
+		loopTimer = setInterval(__loop, queryThings({meta:true}).tick);
 	};
 
 	var __loop = function() {
+		{{{ gameloop }}}
 
+		// Do todo
+		for(var i = 0; i < todo.length; i++) {
+			todo[i]();
+		}
 	};
 
 	window.onload = function() {

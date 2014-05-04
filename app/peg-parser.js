@@ -58,7 +58,7 @@ start       = p:queryAndDo*                         { return p.join('') }       
 queryAndDo  = q:query+ '{' space d:(putCharm / modify)+ '}' space                                                       \
                                                     { return 'queryThings({'+q+'},function(){'+d.join(';')+'});' }      \
 modify      = charmModify / tagModify                                                                                   \
-putCharm    = t:text '<-' space d:thingModify       { return 'queryThings(this,{'+t+':true},function(there){'+d+'});' } \
+putCharm    = t:text '<-' space d:thingModify       { return 'todo.push(queryThings.bind(this,this,{'+t+':true},function(there){'+d+'}));' } \
 tagModify   = r:refer space                         { return r+'=true' }                                                \
 charmModify = r:refer space ':' space v:(value/refer) space                                                             \
                                                     { return r+'='+v }                                                  \
