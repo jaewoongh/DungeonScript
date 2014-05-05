@@ -2,75 +2,111 @@
 var PEG             = require('pegjs');
 
 // Grammar
-var commonGrammar   = " \
-query       = conditionQ / tagQ / notTagQ                                                                           \
-conditionQ  = t:text space s:compareSign space v:value space                                                        \
-                                                    { return t+':function(a){return a'+s+v+';}' }                   \
-tagQ        = t:text space                          { return t+':true' }                                            \
-notTagQ     = '!' t:text space                      { return t+':undefined'}                                        \
-value       = a:(literal / block) space b:(mathSign space (literal / block))*                                       \
-                                                    { return a+b.join('').replace(/,/g, '') }                       \
-block       = '(' v:value ')'                       { return '('+v+')' }                                            \
-literal     = color / string / const / bool / number                                                                \
-mathSign    = [-+*/]                                                                                                \
-compareSign = s:('=' / '!=' / '>=' / '<=' / '>' / '<')                                                              \
-                                                    { return s=='='?'==':s }                                        \
-color       = '#' c:(sixColor / threeColor) space   { return '#'+c }                                                \
-threeColor  = a:colChar b:colChar c:colChar         { return a+b+c }                                                \
-sixColor    = a:threeColor b:threeColor             { return a+b }                                                  \
-colChar     = [a-fA-F0-9]                                                                                           \
-string      = doubleQuot / singleQuot                                                                               \
-doubleQuot  = '\"' s:(text / dqText)+ '\"' space    { return \"'\"+s+\"'\" }                                        \
-singleQuot  = \"'\" s:(text / sqText)+ \"'\" space  { return \"'\"+s+\"'\" }                                        \
-text        = t:legalChar+ space                    { return t.join('') }                                           \
-legalChar   = [a-zA-Z0-9_\]                                                                                         \
-dqText      = t:textCharDbl+ space                  { return t.join('') }                                           \
-sqText      = t:textCharSgl+ space                  { return t.join('') }                                           \
-textCharDbl = [^\\r\\n\"]                                                                                           \
-textCharSgl = [^\\r\\n']                                                                                            \
-const       = c:'remove'                            { return 'undefined' }                                          \
-bool        = 'true' / 'false'                                                                                      \
-number      = real / integer                                                                                        \
-integer     = s:'-'? d:digit+ space                 { return parseInt(s?s:'' +d.join(''), 10) }                     \
-real        = s:'-'? i:digit* '.' f:digit+ space    { return parseFloat(s?s:'' +i.join('')+'.'+f.join(''), 10) }    \
-digit       = [0123456789]                                                                                          \
-space       = [ ,\\r\\n]*                                                                                           \
-SPACE       = [ ,\\r\\n]+ / !.                                                                                      \
-";
+var mainParser      = PEG.buildParser("                                                                                                                                                     \
+    start           = things / gameloop                                                                                                                                                     \
+                                                                                                                                                                                            \
+    things          = p:thingDef+                                   { return p.join('') }                                                                                                   \
+                                                                                                                                                                                            \
+    thingDef        = '{' space a:charming b:(delimiter space charming)* space '}' space                                                                                                    \
+                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'things.push({'+a+(b?',':'')+b.join(',')+'});' }         \
+                                                                                                                                                                                            \
+    charming        = charmAssign / charmTag                                                                                                                                                \
+    charmTag        = t:legalText                                   { return t+':true' }                                                                                                    \
+    charmAssign     = c:legalText space ':' space v:value           { return c+':'+v }                                                                                                      \
+                                                                                                                                                                                            \
+    value           = literalChain / charmChain                                                                                                                                             \
+    charmChain      = p:charmPrefix? a:legalText b:('.' legalText)* { for(var i=0;i<(b.length);i++){b[i]=b[i].join('')} return (p?(p=='@'?'queryThings({'+a+':true})':p+a):a)+b.join('') }  \
+    charmPrefix     = '.' { return 'this.' } / '~' { return 'sender.' } / '@'                                                                                                               \
+    literalChain    = a:(block / literal) b:(space mathOp space (block / literal))*                                                                                                         \
+                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃').join('')} return a+b.join('') }                                  \
+    block           = '(' space l:literalChain space ')'            { return '('+l+')' }                                                                                                    \
+    mathOp          = [-+*/]                                                                                                                                                                \
+                                                                                                                                                                                            \
+    gameloop        = p:queryAndDo+                                 { return p.join('') }                                                                                                   \
+                                                                                                                                                                                            \
+    queryAndDo      = q:queries space '{' space d:does space '}'    { return 'queryThings.bind(this,{'+q+'},function(sender){'+d+'});' }                                                    \
+                                                                                                                                                                                            \
+    queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b?',':'')+b.join(',') }                               \
+    query           = queryQuery / tagQuery                                                                                                                                                 \
+    tagQuery        = n:'!'? t:legalText                            { return n=='!'?(t+':undefined'):(t+':true') }                                                                          \
+    queryQuery      = c:legalText space o:queryOp space v:value     { return c+':function(a){return a'+o+v+'}' }                                                                            \
+    queryOp         = o:('=' / '>=' / '<=' / '>' / '<' / '!=')      { return o=='='?'==':o }                                                                                                \
+                                                                                                                                                                                            \
+    does            = a:(localDo / superDo / sendCharm) b:(delimiter space (localDo / superDo / sendCharm))*                                                                                \
+                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+b.join('') }                                           \
+                                                                                                                                                                                            \
+    localDo         = localAssign / localTag                                                                                                                                                \
+    localTag        = '.' t:legalText                               { return 'this.'+t+'=true;' }                                                                                           \
+    localAssign     = '.' c:legalText space ':' space v:value       { return 'this.'+c+'='+v+';' }                                                                                          \
+                                                                                                                                                                                            \
+    superDo         = superAssign / superTag                                                                                                                                                \
+    superTag        = '~' t:legalText                               { return 'sender.'+t+'=true;' }                                                                                         \
+    superAssign     = '~' c:legalText space ':' space v:value       { return 'sender.'+c+'='+v+';' }                                                                                        \
+                                                                                                                                                                                            \
+    sendCharm       = q:queries space '<~' space '{' space d:does space '}'                                                                                                                 \
+                                                                    { return 'todo.push(queryThings.bind(this,{'+q+'},function(sender){'+d+'}));' }                                         \
+                                                                                                                                                                                            \
+    literal         = number / remove / bool / string                                                                                                                                       \
+                                                                                                                                                                                            \
+    string          = doubleQuot / singleQuot                                                                                                                                               \
+    doubleQuot      = '\"' s:(looseLegalChar / \"'\")* '\"'         { return \"'\"+s.join('')+\"'\" }                                                                                       \
+    singleQuot      = \"'\" s:(looseLegalChar / '\"')* \"'\"        { return \"'\"+s.join('')+\"'\" }                                                                                       \
+    looseLegalChar  = [^'\"]                                                                                                                                                                \
+    legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                 \
+    legalText       = t:legalChar+                                  { return t.join('') }                                                                                                   \
+                                                                                                                                                                                            \
+    remove          = c:'remove'                                    { return 'undefined' }                                                                                                  \
+    bool            = 'true' / 'false'                                                                                                                                                      \
+                                                                                                                                                                                            \
+    number          = real / integer                                                                                                                                                        \
+    integer         = s:'-'? d:digit+                               { return parseInt(s?s:'' +d.join(''), 10) }                                                                             \
+    real            = s:'-'? i:digit* '.' f:digit+                  { return parseFloat(s?s:'' +i.join('')+'.'+f.join(''), 10) }                                                            \
+    digit           = [0123456789]                                                                                                                                                          \
+                                                                                                                                                                                            \
+    delimiter       = ' '* [,\\n\\r]+                               { return '☃' }                                                                                                          \
+    space           = [ \\n\\r]*                                    { return '☃' }                                                                                                          \
+    SPACE           = [ \\n\\r]+ / !.                               { return '☃' }                                                                                                          \
+");
 
-var parser4meta     = PEG.buildParser(" \
-start       = def:(charmAssign / charmTag)+ space   { return 'queryThings(this,{meta:true},function(there){'+def.join(';')+';});' }     \
-charmTag    = t:text space                          { return 'there.'+t+'=true' }                                                       \
-charmAssign = t:text space ':' space v:value space  { return 'there.'+t+'='+v }                                                         \
-"+commonGrammar);
-
-var parser4things   = PEG.buildParser(" \
-start       = p:thingDef*                           { return p.join('') }                                   \
-thingDef    = '{' space def:(charmAssign / charmTag)+ '}' space                                             \
-                                                    { return 'things.push({'+def.join(',')+'});' }          \
-charmTag    = t:text space                          { return t+':true' }                                    \
-charmAssign = t:text space ':' space v:(atRefer/value) space                                                \
-                                                    { return t+':'+v }                                      \
-atRefer     = '@' q:query                           { return 'function(){return queryThings({'+q+'});}' }   \
-"+commonGrammar);
-
-var parser4gameloop = PEG.buildParser(" \
-start       = p:queryAndDo*                         { return p.join('') }                                                                       \
-queryAndDo  = q:query+ '{' space d:(putCharm / modify)+ '}' space                                                                               \
-                                                    { return 'queryThings({'+q+'},function(){'+d.join(';')+'});' }                              \
-modify      = charmModify / tagModify                                                                                                           \
-tagModify   = r:dotRefer space                      { return r+'=true' }                                                                        \
-charmModify = r:dotRefer space ':' space v:(value / dotRefer) space                                                                             \
-                                                    { return r+'='+v }                                                                          \
-putCharm    = q:query+ '<-' space d:thingPass       { return 'todo.push(queryThings.bind(this,this,{'+q+'},function(there){'+d+'}));' }    \
-thingPass   = '{' space def:(charmPass / tagPass)+ '}' space                                                                                    \
-                                                    { return '{'+def.join(';')+'}' }                                                            \
-tagPass     = r:(dotRefer / localRefer) space       { return r+'=true' }                                                                        \
-charmPass   = r:(dotRefer / localRefer) space ':' space v:(value / dotRefer / localRefer) space                                                 \
-                                                    { return r+'='+v }                                                                          \
-dotRefer    = '.' t:text                            { return 'this.'+t }                                                                        \
-localRefer  = t:text                                { return 'there.'+t }                                                                       \
-"+commonGrammar);
+var metaParser      = PEG.buildParser("                                                                                                                                                     \
+    start           = p:metaCharms+                                 { return p.join('') }                                                                                                   \
+                                                                                                                                                                                            \
+    metaCharms      = '{' space a:charming b:(delimiter space charming)* space '}' space                                                                                                    \
+                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'things.push({'+a+(b?',':'')+b.join(',')+'});' }         \
+                                                                                                                                                                                            \
+    charming        = charmAssign / charmTag                                                                                                                                                \
+    charmTag        = t:legalText                                   { return t+':true' }                                                                                                    \
+    charmAssign     = c:legalText space ':' space v:value           { return c+':'+v }                                                                                                      \
+                                                                                                                                                                                            \
+    value           = literalChain / charmChain                                                                                                                                             \
+    charmChain      = p:charmPrefix? a:legalText b:('.' legalText)* { for(var i=0;i<(b.length);i++){b[i]=b[i].join('')} return (p?(p=='@'?'queryThings({'+a+':true})':p+a):a)+b.join('') }  \
+    charmPrefix     = '.' { return 'this.' } / '~' { return 'sender.' } / '@'                                                                                                               \
+    literalChain    = a:(block / literal) b:(space mathOp space (block / literal))*                                                                                                         \
+                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃').join('')} return a+b.join('') }                                  \
+    block           = '(' space l:literalChain space ')'            { return '('+l+')' }                                                                                                    \
+    mathOp          = [-+*/]                                                                                                                                                                \
+                                                                                                                                                                                            \
+    literal         = number / remove / bool / string                                                                                                                                       \
+                                                                                                                                                                                            \
+    string          = doubleQuot / singleQuot                                                                                                                                               \
+    doubleQuot      = '\"' s:(looseLegalChar / \"'\")* '\"'         { return \"'\"+s.join('')+\"'\" }                                                                                       \
+    singleQuot      = \"'\" s:(looseLegalChar / '\"')* \"'\"        { return \"'\"+s.join('')+\"'\" }                                                                                       \
+    looseLegalChar  = [^'\"]                                                                                                                                                                \
+    legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                 \
+    legalText       = t:legalChar+                                  { return t.join('') }                                                                                                   \
+                                                                                                                                                                                            \
+    remove          = c:'remove'                                    { return 'undefined' }                                                                                                  \
+    bool            = 'true' / 'false'                                                                                                                                                      \
+                                                                                                                                                                                            \
+    number          = real / integer                                                                                                                                                        \
+    integer         = s:'-'? d:digit+                               { return parseInt(s?s:'' +d.join(''), 10) }                                                                             \
+    real            = s:'-'? i:digit* '.' f:digit+                  { return parseFloat(s?s:'' +i.join('')+'.'+f.join(''), 10) }                                                            \
+    digit           = [0123456789]                                                                                                                                                          \
+                                                                                                                                                                                            \
+    delimiter       = ' '* [,\\n\\r]+                               { return '☃' }                                                                                                          \
+    space           = [ \\n\\r]*                                    { return '☃' }                                                                                                          \
+    SPACE           = [ \\n\\r]+ / !.                               { return '☃' }                                                                                                          \
+");
 
 // Export functions
 exports.parseMeta = function(code, callback) {
@@ -79,29 +115,19 @@ exports.parseMeta = function(code, callback) {
         else return parser4meta.parse(code);
     } catch(err) {
         if(callback) callback(buildErrorMessage(err));
-        else return err;
+        else return buildErrorMessage(err);
     }
 };
 
-exports.parseThings = function(code, callback) {
+exports.parse = function(code, callback) {
     try {
-        if(callback) callback(undefined, parser4things.parse(code));
-        else return parser4things.parse(code);
+        if(callback) callback(undefined, mainParser.parse(code));
+        else return mainParser.parse(code);
     } catch(err) {
         if(callback) callback(buildErrorMessage(err));
-        else return err;
+        else return buildErrorMessage(err);
     }
-};
-
-exports.parseGameloop = function(code, callback) {
-    try {
-        if(callback) callback(undefined, parser4gameloop.parse(code));
-        else return parser4gameloop.parse(code);
-    } catch(err) {
-        if(callback) callback(buildErrorMessage(err));
-        else return err;
-    }
-};
+}
 
 function buildErrorMessage(e) {
     return e.line !== undefined && e.column !== undefined

@@ -3,6 +3,9 @@
 	var todo = [];
 	var loopTimer;
 
+	var canvas;
+	var ctx;
+
 	var queryThings = function() {
 		switch(arguments.length) {
 			case 1:
@@ -110,6 +113,7 @@
 	};
 
 	var __start = function() {
+		// Initialize things data
 		things.push({
 			meta:			true,
 			title:			'Murmuring Depths',
@@ -121,6 +125,12 @@
 		});
 		{{{ meta }}}
 		{{{ things }}}
+
+		// Set canvas
+		canvas = document.createElemet('canvas');
+		ctx = canvas.getContext('2d');
+
+		// Set loop timer
 		loopTimer = setInterval(__loop, queryThings({meta:true}).tick);
 	};
 

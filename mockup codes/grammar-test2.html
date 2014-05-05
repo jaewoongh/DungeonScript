@@ -1,0 +1,126 @@
+<script src="../public/js/jquery.js"></script>
+<script src="../public/js/jqconsole.js"></script>
+<script src="../public/js/sugar.js"></script>
+<script src="../public/js/peg.js"></script>
+<script src="../public/js/plt.js"></script>
+
+<title>Grammar Test for DungeonScript</title>
+
+<!-- USAGE REFERENCE OF queryThings()
+
+    queryThings({ match:charm, maybe:onemore });
+        -> Return thing(s) that matches conditions
+        -> For use of: { charm: @thing }
+
+    queryThings({ match:charm }, function(sender) {
+        this.charm = isNowThis;
+        this.theOther = sender.charm;
+    });
+        -> Get thing(s) that matches conditions, and do something with it(them) and possibly a sender.
+        -> For use of: query { .do: something }
+        -> For use of: query { toOtherThings <~ { .do: aThing, .or: ~more } }
+//-->
+
+<grammar>
+start           = things / gameloop
+
+    <!-- THINGS //-->
+things          = p:thingDef+                                   { return p.join('') }
+
+thingDef        = '{' space a:charming b:(delimiter space charming)* space '}' space
+                                                                { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'things.push({'+a+(b?',':'')+b.join(',')+'});' }
+
+charming        = charmAssign / charmTag
+charmTag        = t:legalText                                   { return t+':true' }
+charmAssign     = c:legalText space ':' space v:value           { return c+':'+v }
+
+value           = literalChain / charmChain
+charmChain      = p:charmPrefix? a:legalText b:('.' legalText)* { for(var i=0;i<(b.length);i++){b[i]=b[i].join('')} return (p?(p=='@'?'queryThings({'+a+':true})':p+a):a)+b.join('') }
+charmPrefix     = '.' { return 'this.' } / '~' { return 'sender.' } / '@'
+literalChain    = a:(block / literal) b:(space mathOp space (block / literal))*
+                                                                { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃').join('')} return a+b.join('') }
+block           = '(' space l:literalChain space ')'            { return '('+l+')' }
+mathOp          = [-+*/]
+
+    <!-- GAME LOOP //-->
+gameloop        = p:queryAndDo+                                 { return p.join('') }
+
+queryAndDo      = q:queries space '{' space d:does space '}'    { return 'queryThings.bind(this,{'+q+'},function(sender){'+d+'});' }
+
+queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b?',':'')+b.join(',') }
+query           = queryQuery / tagQuery
+tagQuery        = n:'!'? t:legalText                            { return n=='!'?(t+':undefined'):(t+':true') }
+queryQuery      = c:legalText space o:queryOp space v:value     { return c+':function(a){return a'+o+v+'}' }
+queryOp         = o:('=' / '>=' / '<=' / '>' / '<' / '!=')      { return o=='='?'==':o }
+
+does            = a:(localDo / superDo / sendCharm) b:(delimiter space (localDo / superDo / sendCharm))*
+                                                                { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+b.join('') }
+
+localDo         = localAssign / localTag
+localTag        = '.' t:legalText                               { return 'this.'+t+'=true;' }
+localAssign     = '.' c:legalText space ':' space v:value       { return 'this.'+c+'='+v+';' }
+
+superDo         = superAssign / superTag
+superTag        = '~' t:legalText                               { return 'sender.'+t+'=true;' }
+superAssign     = '~' c:legalText space ':' space v:value       { return 'sender.'+c+'='+v+';' }
+
+sendCharm       = q:queries space '<~' space '{' space d:does space '}'
+                                                                { return 'todo.push(queryThings.bind(this,{'+q+'},function(sender){'+d+'}));' }
+
+    <!-- LITERALS //-->
+literal         = number / remove / bool / string
+
+string          = doubleQuot / singleQuot
+doubleQuot      = '"' s:(looseLegalChar / "'")* '"'             { return "'"+s.join('')+"'" }
+singleQuot      = "'" s:(looseLegalChar / '"')* "'"             { return "'"+s.join('')+"'" }
+looseLegalChar  = [^'"']
+legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }
+legalText       = t:legalChar+                                  { return t.join('') }
+
+remove          = c:'remove'                                    { return 'undefined' }
+bool            = 'true' / 'false'
+
+number          = real / integer
+integer         = s:'-'? d:digit+                               { return parseInt(s?s:'' +d.join(''), 10) }
+real            = s:'-'? i:digit* '.' f:digit+                  { return parseFloat(s?s:'' +i.join('')+'.'+f.join(''), 10) }
+digit           = [0123456789]
+
+delimiter       = ' '* [,\n\r]+                                 { return '☃' }
+space           = [ \n\r]*                                      { return '☃' }
+SPACE           = [ \n\r]+ / !.                                 { return '☃' }
+</grammar>
+
+<h3>Thing Definition</h3>
+<code>{ player,
+  name: "Jaewoong Hwang",
+  hp: 50 + 5 * 3,
+  hp-max: (50- 313.3+(3/3))*5,
+  color: '#ad322f',
+  weapon: @longsword
+}
+</code>
+
+<h3>Query and Do</h3>
+<code>player=true, enemy {
+ .asd: 30,
+    qwe<5, aasdf <~ {.q, .w:~q, ~aa:.ee, .f:@qqq},
+    enemy <~ { .hp: 0 }
+}</code>
+<code>player, hp=30 {
+  .hp: 20,
+  enemy <~ { .whatever: 50, .asdf: .hp },
+  qwer <~ { .asdf: remove }
+}</code>
+
+<h3>Test Longer</h3>
+<code>{ meta,
+  title: "Awesome Dungeon",
+  author: "Jaewoong",
+  tick: 200,
+  target-width: 800,
+  target-height: 600,
+  font: "./assets/font/Volter__28Goldfish_29.ttf"
+}
+
+{ player hp:50 hp-max:50 weapon:@dagger armor:@clothes gold:0 }
+</code>
