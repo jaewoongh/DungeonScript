@@ -22,7 +22,7 @@
 //-->
 
 <grammar>
-start           = things / gameloop
+start           = p:(things / gameloop)*                         { return p.join('') }
 
     <!-- THINGS //-->
 things          = p:thingDef+                                   { return p.join('') }
@@ -45,7 +45,8 @@ mathOp          = [-+*/]
     <!-- GAME LOOP //-->
 gameloop        = p:queryAndDo+                                 { return p.join('') }
 
-queryAndDo      = q:queries space '{' space d:does space '}'    { return 'queryThings.bind(this,{'+q+'},function(sender){'+d+'});' }
+queryAndDo      = q:queries space '{' space d:does space '}' space
+                                                                { return 'queryThings.call(this,{'+q+'},function(sender){'+d+'});' }
 
 queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b?',':'')+b.join(',') }
 query           = queryQuery / tagQuery
@@ -53,7 +54,7 @@ tagQuery        = n:'!'? t:legalText                            { return n=='!'?
 queryQuery      = c:legalText space o:queryOp space v:value     { return c+':function(a){return a'+o+v+'}' }
 queryOp         = o:('=' / '>=' / '<=' / '>' / '<' / '!=')      { return o=='='?'==':o }
 
-does            = a:(localDo / superDo / sendCharm) b:(delimiter space (localDo / superDo / sendCharm))*
+does            = a:(sendCharmAt / localDo / superDo / sendCharm) b:(delimiter space (sendCharmAt / localDo / superDo / sendCharm))*
                                                                 { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+b.join('') }
 
 localDo         = localAssign / localTag
@@ -66,6 +67,8 @@ superAssign     = '~' c:legalText space ':' space v:value       { return 'sender
 
 sendCharm       = q:queries space '<~' space '{' space d:does space '}'
                                                                 { return 'todo.push(queryThings.bind(this,{'+q+'},function(sender){'+d+'}));' }
+sendCharmAt     = '.' c:legalText space '<~' space '{' space d:does space '}'
+                                                                { return 'todo.push(function(sender){'+d+'}.bind(this.'+c+',this));' }
 
     <!-- LITERALS //-->
 literal         = number / remove / bool / string

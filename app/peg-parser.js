@@ -4,7 +4,7 @@ var sugar           = require('sugar');
 
 // Grammar
 var mainParser      = PEG.buildParser("                                                                                                                                                     \
-    start           = things / gameloop                                                                                                                                                     \
+    start           = p:(things / gameloop)*                        { return p.join('') }                                                                                                   \
                                                                                                                                                                                             \
     things          = p:thingDef+                                   { return p.join('') }                                                                                                   \
                                                                                                                                                                                             \
@@ -25,7 +25,8 @@ var mainParser      = PEG.buildParser("                                         
                                                                                                                                                                                             \
     gameloop        = p:queryAndDo+                                 { return p.join('') }                                                                                                   \
                                                                                                                                                                                             \
-    queryAndDo      = q:queries space '{' space d:does space '}'    { return 'queryThings.bind(this,{'+q+'},function(sender){'+d+'});' }                                                    \
+    queryAndDo      = q:queries space '{' space d:does space '}' space                                                                                                                      \
+                                                                    { return 'queryThings.call(this,{'+q+'},function(sender){'+d+'});' }                                                    \
                                                                                                                                                                                             \
     queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b?',':'')+b.join(',') }                               \
     query           = queryQuery / tagQuery                                                                                                                                                 \
@@ -33,7 +34,7 @@ var mainParser      = PEG.buildParser("                                         
     queryQuery      = c:legalText space o:queryOp space v:value     { return c+':function(a){return a'+o+v+'}' }                                                                            \
     queryOp         = o:('=' / '>=' / '<=' / '>' / '<' / '!=')      { return o=='='?'==':o }                                                                                                \
                                                                                                                                                                                             \
-    does            = a:(localDo / superDo / sendCharm) b:(delimiter space (localDo / superDo / sendCharm))*                                                                                \
+    does            = a:(sendCharmAt / localDo / superDo / sendCharm) b:(delimiter space (sendCharmAt / localDo / superDo / sendCharm))*                                                                                \
                                                                     { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+b.join('') }                                           \
                                                                                                                                                                                             \
     localDo         = localAssign / localTag                                                                                                                                                \
@@ -46,6 +47,8 @@ var mainParser      = PEG.buildParser("                                         
                                                                                                                                                                                             \
     sendCharm       = q:queries space '<~' space '{' space d:does space '}'                                                                                                                 \
                                                                     { return 'todo.push(queryThings.bind(this,{'+q+'},function(sender){'+d+'}));' }                                         \
+    sendCharmAt     = '.' c:legalText space '<~' space '{' space d:does space '}'                                                                                                           \
+                                                                    { return 'todo.push(function(sender){'+d+'}.bind(this.'+c+',this));' }                                                \
                                                                                                                                                                                             \
     literal         = number / remove / bool / string                                                                                                                                       \
                                                                                                                                                                                             \
@@ -70,7 +73,7 @@ var mainParser      = PEG.buildParser("                                         
 ");
 
 var metaParser      = PEG.buildParser("                                                                                                                                                     \
-    start           = p:metaCharms+                                 { return p.join('') }                                                                                                   \
+    start           = p:metaCharms*                                 { return p.join('') }                                                                                                   \
                                                                                                                                                                                             \
     metaCharms      = a:charming b:(delimiter space charming)* space                                                                                                                        \
                                                                     { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'things.push({'+a+(b?',':'')+b.join(',')+'});' }         \

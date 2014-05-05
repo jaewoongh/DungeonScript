@@ -7,7 +7,7 @@
 <title>Grammar Test for DungeonScript</title>
 
 <grammar>
-start       = p:(thingDef / queryAndDo)+            { return p.join('') }
+start       = p:(thingDef / queryAndDo)*            { return p.join('') }
 
 <!-- Thing Definition //-->
 thingDef    = '{' space def:(charmAssign / charmTag)+ '}' space

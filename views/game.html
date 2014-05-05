@@ -1,0 +1,145 @@
+<!--
+   ______                      _ __         __   ______                   
+  / ____/___  ____ ___  ____  (_) /__  ____/ /  / ____/___ _____ ___  ___ 
+ / /   / __ \/ __ `__ \/ __ \/ / / _ \/ __  /  / / __/ __ `/ __ `__ \/ _ \
+/ /___/ /_/ / / / / / / /_/ / / /  __/ /_/ /  / /_/ / /_/ / / / / / /  __/
+\____/\____/_/ /_/ /_/ .___/_/_/\___/\__,_/   \____/\__,_/_/ /_/ /_/\___/ 
+                    /_/                                                   
+ Main game script that has setup and loop
+  Written by Jaewoong Hwang (http://jaewoong.info)
+   May 2014
+//-->
+
+<script>
+/*  ____ _    ____ ___  ____ _       _  _ ____ ____ _ ____ ___  _    ____ ____ 
+    | __ |    |  | |__] |__| |       |  | |__| |__/ | |__| |__] |    |___ [__  
+    |__] |___ |__| |__] |  | |___     \/  |  | |  \ | |  | |__] |___ |___ ___]  */
+
+    var things = [];    // Key array that holds every THINGS
+    var todo = [];      // Things that would happen at the end of the loop
+    var loopTimer;      // Interval timer -- may be removed for the sake of pause
+
+    var canvas;         // Main game canvas
+    var ctx;            // Main game canvas context
+
+
+/*  ____ _  _ ____ ____ _   _    ____ _  _ _  _ ____ ___ _ ____ _  _ 
+    |  | |  | |___ |__/  \_/     |___ |  | |\ | |     |  | |  | |\ | 
+    |_\| |__| |___ |  \   |      |    |__| | \| |___  |  | |__| | \| 
+
+    The only basic function for the entire system.
+    Retrieve THINGS that matches conditions, and deal with them.
+
+    Usage: 
+        queryThings({ match:charm, maybe:onemore });
+            -> Return thing(s) that matches conditions
+            -> For use of: { charm: @thing }
+
+        queryThings({ match:charm }, function(sender) {
+            this.charm = isNowThis;
+            this.theOther = sender.charm;
+        });
+            -> Get thing(s) that matches conditions, and do something with it(them) and possibly a sender.
+            -> For use of: query { .do: something }
+            -> For use of: query { toOtherThings <~ { .do: aThing, .or: ~more } }   */
+
+    var queryThings = function() {
+        // arguments[0] should be a query object, while arguments[1] being callback function
+        var query = arguments[0] || {};
+        var callback = arguments[1] || undefined;
+
+        var result = [];
+        for(var i = 0; i < things.length; i++) {
+            result.push(things[i]);     // Assume that the thing satisifies queries, and discard later when it does not
+            for(var key in query) {
+                if(!query.hasOwnProperty(key)) continue;
+                if((things[i][key] !== undefined) === (query[key] === undefined)) {
+                // If there's no CHARM for query or there is a CHARM for !query,
+                    result.pop();
+                    break;
+                } else if(things[i][key]) {
+                // If there's a CHARM for query
+                    if(typeof query[key] === 'function') {
+                        if(!query[key](things[i][key])) {
+                            result.pop();
+                            break;
+                        }
+                    } else {
+                        if(things[i][key] !== query[key]) {
+                            result.pop();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(callback) {
+            // Call callback function with scope
+            for(var i = 0; i < result.length; i++) {
+                callback.call(result[i], this);
+            }
+        } else {
+            // Or just return the first matched THING
+            return result[0];
+        }
+    };
+
+
+/*  ____ ____ ___ 
+    [__  |___  |  
+    ___] |___  |    */
+
+    var setGame = function() {
+        // Set default meta data
+        things.push({
+            meta:           true,
+            title:          'untitled',
+            author:         'unknown',
+            tick:           200,
+            font:           undefined,
+            targetWidth:    800,
+            targetHeight:   600
+        });
+
+        // Override meta data if needed
+        {{{ meta }}}
+
+        // Set things
+        {{{ set }}}
+
+        // Set loop timer
+        loopTimer = setInterval(loopGame, queryThings({meta:true}).tick);
+    };
+
+
+/*  _    ____ ____ ___  
+    |    |  | |  | |__] 
+    |___ |__| |__| |        */
+
+    var loopGame = function() {
+        // Run loop code
+        {{{ loop }}}
+
+        // Deal with built-in behaviors
+        for(var i = 0; i < things.length; i++) {
+            for(var key in things[i]) {
+                if(!things[i].hasOwnProperty(key)) continue;
+                switch(things[i][key]) {
+                    // TODO here
+                }
+            }
+        }
+
+        // Run to-do, and reset it
+        for(var i = 0; i < todo.length; i++) {
+            todo[i]();
+        }
+        todo = [];
+    };
+
+
+    window.onload = function() {
+        setGame();
+    };
+</script>
