@@ -28,7 +28,7 @@ var mainParser      = PEG.buildParser("                                         
     queryAndDo      = q:queries space '{' space d:does space '}' space                                                                                                                                          \
                                                                     { return 'queryThings.call(this,{'+q+'},function(sender){'+d+'});' }                                                                        \
                                                                                                                                                                                                                 \
-    queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b?',':'')+b.join(',') }                                                   \
+    queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b[0]?',':'')+b.join(',') }                                                   \
     query           = queryQuery / tagQuery                                                                                                                                                                     \
     tagQuery        = n:'!'? t:legalText                            { return n=='!'?(t+':undefined'):(t+':true') }                                                                                              \
     queryQuery      = c:legalText space o:queryOp space v:value     { return c+':function(a){return a'+o+v+'}' }                                                                                                \
@@ -76,7 +76,7 @@ var metaParser      = PEG.buildParser("                                         
     start           = p:metaCharms*                                 { return p.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
     metaCharms      = a:charming b:(delimiter space charming)* space                                                                                                                                            \
-                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'queryThings({meta:true},function(sender){'+a+(b?';':'')+b.join(';')+'});' } \
+                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'queryThings({meta:true},function(sender){'+a+(b[0]?';':'')+b.join(';')+'});' } \
                                                                                                                                                                                                                 \
     charming        = charmAssign / charmTag                                                                                                                                                                    \
     charmTag        = t:legalText                                   { return 'this.'+t+'=true' }                                                                                                                \
