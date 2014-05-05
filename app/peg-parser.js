@@ -134,7 +134,7 @@ exports.parse = function(code, callback) {
 }
 
 function buildErrorMessage(e) {
-    return e.line !== undefined && e.column !== undefined
-      ? "Line " + e.line + ", column " + e.column + ": " + e.message
-      : e.message;
+    return '<span style="color:red">'+(e.line !== undefined && e.column !== undefined
+        ? '[' + e.line + ':' + e.column + '] ' + e.message
+        : e.message)+'</span>';
 }
