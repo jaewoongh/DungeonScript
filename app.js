@@ -27,7 +27,7 @@ app.use(express.static(__dirname + '/public'));
 
 // Manual routes
 app.get('/', function(req, res) {
-    res.redirect('/create');
+    res.render('frontpage');
 });
 
 app.get('/create', function(req, res) {
