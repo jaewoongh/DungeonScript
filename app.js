@@ -41,8 +41,8 @@ app.post('/create', function(req, res) {
     var gameloop = data.gameloop;
 
     var parsedMeta = PEG.parseMeta(meta);
-    var parsedThings = PEG.parseThings(things);
-    var parsedGameloop = PEG.parseGameloop(gameloop);
+    var parsedThings = PEG.parse(things);
+    var parsedGameloop = PEG.parse(gameloop);
 
     if(data.interprete) {
         res.render('create', {

@@ -1,5 +1,6 @@
 // Setup
 var PEG             = require('pegjs');
+var sugar           = require('sugar');
 
 // Grammar
 var mainParser      = PEG.buildParser("                                                                                                                                                     \
@@ -71,7 +72,7 @@ var mainParser      = PEG.buildParser("                                         
 var metaParser      = PEG.buildParser("                                                                                                                                                     \
     start           = p:metaCharms+                                 { return p.join('') }                                                                                                   \
                                                                                                                                                                                             \
-    metaCharms      = '{' space a:charming b:(delimiter space charming)* space '}' space                                                                                                    \
+    metaCharms      = a:charming b:(delimiter space charming)* space                                                                                                                        \
                                                                     { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'things.push({'+a+(b?',':'')+b.join(',')+'});' }         \
                                                                                                                                                                                             \
     charming        = charmAssign / charmTag                                                                                                                                                \
@@ -111,8 +112,8 @@ var metaParser      = PEG.buildParser("                                         
 // Export functions
 exports.parseMeta = function(code, callback) {
     try {
-        if(callback) callback(undefined, parser4meta.parse(code));
-        else return parser4meta.parse(code);
+        if(callback) callback(undefined, metaParser.parse(code));
+        else return metaParser.parse(code);
     } catch(err) {
         if(callback) callback(buildErrorMessage(err));
         else return buildErrorMessage(err);
