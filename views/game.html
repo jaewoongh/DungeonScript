@@ -118,6 +118,12 @@
     |___ |__| |__| |        */
 
     var loopGame = function() {
+        // Run to-do, and reset it
+        for(var i = 0; i < todo.length; i++) {
+            todo[i]();
+        }
+        todo = [];
+
         // Run loop code
         {{{ loop }}}
 
@@ -130,12 +136,6 @@
                 }
             }
         }
-
-        // Run to-do, and reset it
-        for(var i = 0; i < todo.length; i++) {
-            todo[i]();
-        }
-        todo = [];
     };
 
 
