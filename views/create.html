@@ -71,3 +71,11 @@
 		</div>
 	</form>
 </div>
+
+<script>
+	window.onload = function() {
+		document.getElementById('txt-meta').value = 'title: "text demo"\nauthor: "you"\ntick: 250';
+		document.getElementById('txt-things').value = '{ text:"hello, world", x:0.5, y:0.5, text-align:"center" }';
+		document.getElementById('txt-gameloop').value = 'text, !show { text <~ { .show } }\ntext, show { text <~ { .show: remove } }';
+	};
+</script>
