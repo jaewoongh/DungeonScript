@@ -10,6 +10,11 @@
    May 2014
 //-->
 
+<div id="gameContainer" style="position:absolute;top:10px;bottom:10px;left:10px;right:10px;">
+</div>
+
+<script src="js/texthelper.js"></script>
+
 <script>
 /*  ____ _    ____ ___  ____ _       _  _ ____ ____ _ ____ ___  _    ____ ____ 
     | __ |    |  | |__] |__| |       |  | |__| |__/ | |__| |__] |    |___ [__  
@@ -65,7 +70,7 @@
                             break;
                         }
                     } else {
-                        if(things[i][key] !== query[key]) {
+                        if(query[key] !== true && things[i][key] !== query[key]) {
                             result.pop();
                             break;
                         }
@@ -99,11 +104,24 @@
             tick:           200,
             font:           undefined,
             targetWidth:    800,
-            targetHeight:   600
+            targetHeight:   600,
+            /* fixed-size:  true */
         });
 
         // Override meta data if needed
         {{{ meta }}}
+
+        // Set canvas
+        canvas = document.createElement('canvas');
+        var meta = queryThings({meta:true});
+        if(meta.fixed$size === true) {
+            canvas.width = meta.targetWidth;
+            canvas.height = meta.targetHeight;
+        } else {
+            resizeCanvas(meta.targetWidth, meta.targetHeight);
+        }
+        ctx = canvas.getContext('2d');
+        document.getElementById('gameContainer').appendChild(canvas);
 
         // Set things
         {{{ set }}}
@@ -118,6 +136,11 @@
     |___ |__| |__| |        */
 
     var loopGame = function() {
+        // Fill out canvas
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#000000';
+        ctx.fill();
+
         // Run to-do, and reset it
         for(var i = 0; i < todo.length; i++) {
             todo[i]();
@@ -131,13 +154,62 @@
         for(var i = 0; i < things.length; i++) {
             for(var key in things[i]) {
                 if(!things[i].hasOwnProperty(key)) continue;
-                switch(things[i][key]) {
+                switch(key) {
+                    /* Show text on canvas
+                        text ─┬─ show
+                              ├─ x: number relative to screen width
+                              ├─ y: number relative to screen height
+                              ├─ wrap-width: number relative to screen width
+                              ├─ wrap-height: number relative to screen height
+                              ├─ text-align: start / end / center / left / right
+                              ├─ font: "Helvetica"
+                              ├─ font-size: number relative to screen height
+                              └─ font-color: "#nnnnnn"  */
+                    case 'text':
+                        if(!things[i]['show']) break;
+                        var textOption = {
+                            text: things[i]['text'] || '',
+                            x: things[i]['x'] || 0,
+                            y: things[i]['y'] || 0.05,
+                            wrap$width: things[i]['wrap$width'] || 0,
+                            wrap$height: things[i]['wrap$height'] || 0,
+                            text$align: things[i]['text$align'] || 'start',
+                            font: things[i]['font'] || 'Andale Mono',
+                            font$size: things[i]['font$size'] || 0.05,
+                            font$color: things[i]['font$color'] || '#ffffff'
+                        };
+                        textHelper.drawText(ctx, textOption);
+                        break;
+
                     // TODO here
                 }
             }
         }
     };
 
+
+/*  ____ ___ _  _ ____ ____ ____ 
+    |  |  |  |__| |___ |__/ [__  
+    |__|  |  |  | |___ |  \ ___]    */
+
+    var resizeCanvas = function(tWidth, tHeight) {
+        var gc = document.getElementById('gameContainer');
+        if(tWidth/tHeight >= gc.offsetWidth/gc.offsetHeight) {
+            canvas.width = gc.offsetWidth;
+            canvas.height = gc.offsetWidth * tHeight / tWidth;
+            canvas.setAttribute('style', 'position:absolute;top:'+(gc.offsetHeight-canvas.height)*0.5+'px');
+        } else {
+            canvas.height = gc.offsetHeight;
+            canvas.width = gc.offsetHeight * tWidth / tHeight;
+            canvas.setAttribute('style', 'position:absolute;left:'+(gc.offsetWidth-canvas.width)*0.5+'px');
+        }
+    };
+
+
+    window.onresize = function() {
+        var meta = queryThings({meta:true});
+        resizeCanvas(meta.targetWidth, meta.targetHeight);
+    };
 
     window.onload = function() {
         setGame();
