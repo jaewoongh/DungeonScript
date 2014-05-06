@@ -30,6 +30,10 @@ app.get('/', function(req, res) {
     res.render('frontpage');
 });
 
+app.get('/documentation', function(req, res) {
+    res.render('documentation');
+});
+
 app.get('/create', function(req, res) {
     res.render('create');
 });
