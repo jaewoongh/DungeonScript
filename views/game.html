@@ -23,6 +23,7 @@
     |__] |___ |__| |__] |  | |___     \/  |  | |  \ | |  | |__] |___ |___ ___]  */
 
     var things = [];    // Key array that holds every THINGS
+    var queries = [];   // One more key array that holds every QUERIES, and it will be run through every loop
     var todo = [];      // Things that would happen at the end of the loop
     var loopTimer;      // Interval timer -- may be removed for the sake of pause
 
@@ -60,6 +61,7 @@
         var callback = arguments[1] || undefined;
 
         var result = [];
+        var validIndexes = [];
         for(var i = 0; i < things.length; i++) {
             result.push(things[i]);     // Assume that the thing satisifies queries, and discard later when it does not
             for(var key in query) {
@@ -74,17 +76,29 @@
                         if(!query[key](things[i][key])) {
                             result.pop();
                             break;
+                        } else {
+                            // Finally it turned out to be valid!
+                            if(!things[i]['meta']) validIndexes.push(i);
                         }
                     } else {
                         if(query[key] !== true && things[i][key] !== query[key]) {
                             result.pop();
                             break;
+                        } else {
+                            // Finally it turned out to be valid!
+                            if(!things[i]['meta']) validIndexes.push(i);
                         }
                     }
                 }
             }
         }
 
+        // Rearrange things -- queried thing goes on top of others
+        for(var i = 0; i < validIndexes.length; i++) {
+            things = things.concat(things.splice(validIndexes[i], 1));
+        }
+
+        // Call callback function
         if(callback) {
             // Call callback function with scope
             for(var i = 0; i < result.length; i++) {
@@ -115,7 +129,7 @@
         });
 
         // Override meta data if needed
-        {{{ meta }}}
+        {{{ ready }}}
 
         // Set canvas
         canvas = document.createElement('canvas');
@@ -131,6 +145,9 @@
 
         // Set things
         {{{ set }}}
+
+        // Set queries
+        {{{ run }}}
 
         // Loop through things, look for assets to be loaded before starting the loop
         for(var i = 0; i < things.length; i++) {
@@ -183,16 +200,12 @@
         ctx.fillStyle = '#000000';
         ctx.fill();
 
-        // Run to-do, and reset it
-        for(var i = 0; i < todo.length; i++) {
-            todo[i]();
+        // Loop through and run queries
+        for(var i = 0; i < queries.length; i++) {
+            queries[i]();
         }
-        todo = [];
 
-        // Run loop code
-        {{{ loop }}}
-
-        // Deal with built-in behaviors
+        // Loop through things and deal with built-in behaviors
         for(var i = 0; i < things.length; i++) {
             for(var key in things[i]) {
                 if(!things[i].hasOwnProperty(key)) continue;
@@ -275,6 +288,12 @@
                 }
             }
         }
+
+        // Run to-do, and reset it
+        for(var i = 0; i < todo.length; i++) {
+            todo[i]();
+        }
+        todo = [];
     };
 
 

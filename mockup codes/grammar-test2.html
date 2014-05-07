@@ -22,7 +22,7 @@
 //-->
 
 <grammar>
-start           = p:(things / gameloop)*                         { return p.join('') }
+start           = p:(things / gameloop)*                        { return p.join('') }
 
     <!-- THINGS //-->
 things          = p:thingDef+                                   { return p.join('') }

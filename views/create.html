@@ -32,33 +32,33 @@
 	</div>
 
 	<form action="/create" method="POST">
-		<div id="area-meta" class="container" style="padding:0px; margin:10px">
+		<div id="area-ready" class="container" style="padding:0px; margin:10px">
 			<h4>READY</h4>
 			<p>Set/modify some meta data for the entire game</p>
 			<div class="col-md-8" style="padding:0px">
-				<textarea id="txt-meta" name="meta" style="width:100%; max-width:100%; height:80px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="title: 'Awesome Dungeon'">{{ meta }}</textarea>
+				<textarea id="txt-ready" name="ready" style="width:100%; max-width:100%; height:80px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="title: 'Awesome Dungeon'">{{ ready }}</textarea>
 			</div>
 			<div class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;">
 				{{{ c_meta }}}
 			</div>
 		</div>
 
-		<div id="area-things" class="container" style="padding:0px; margin:10px">
+		<div id="area-set" class="container" style="padding:0px; margin:10px">
 			<h4>SET</h4>
 			<p>This runs once on the start of the game, so set some things for later use</p>
 			<div class="col-md-8" style="padding:0px">
-				<textarea id="txt-things" name="things"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="{ player, hp: 40, hp-max: 50, weapon: @short-sword }">{{ things }}</textarea>
+				<textarea id="txt-set" name="set"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="{ player, hp: 40, hp-max: 50, weapon: @short-sword }">{{ set }}</textarea>
 			</div>
 			<div class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;">
 				{{{ c_things }}}
 			</div>
 		</div>
 
-		<div id="area-gameloop" class="container" style="padding:0px; margin:10px">
+		<div id="area-run" class="container" style="padding:0px; margin:10px">
 			<h4>RUN</h4>
 			<p>This runs every tick, making the game run</p>
 			<div class="col-md-8" style="padding:0px">
-				<textarea id="txt-gameloop" name="gameloop"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="player, hp<=0 { .dead, gamephase <~ { .gamephase: 'gameover' } }">{{ gameloop }}</textarea>
+				<textarea id="txt-run" name="run"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="player, hp<=0 { .dead, gamephase <~ { .gamephase: 'gameover' } }">{{ run }}</textarea>
 			</div>
 			<div class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;">
 				{{{ c_gameloop }}}
@@ -74,8 +74,8 @@
 
 <script>
 	window.onload = function() {
-		document.getElementById('txt-meta').value = 'title: "text demo"\nauthor: "you"\ntick: 250';
-		document.getElementById('txt-things').value = '{ text:"hello, world", x:0.5, y:0.5, text-align:"center" }';
-		document.getElementById('txt-gameloop').value = 'text, !show { text <~ { .show } }\ntext, show { text <~ { .show: remove } }';
+		document.getElementById('txt-ready').value = 'title: "text demo"\nauthor: "you"\ntick: 250';
+		document.getElementById('txt-set').value = '{ text:"hello, world", x:0.5, y:0.5, text-align:"center" }';
+		document.getElementById('txt-run').value = 'text, !show { text <~ { .show } }\ntext, show { text <~ { .show: remove } }';
 	};
 </script>

@@ -40,20 +40,20 @@ app.get('/create', function(req, res) {
 
 app.post('/create', function(req, res) {
     var data = req.body;
-    var meta = data.meta;
-    var things = data.things;
-    var gameloop = data.gameloop;
+    var ready = data.ready;
+    var set = data.set;
+    var run = data.run;
 
-    var parsedMeta = PEG.parseMeta(meta);
-    var parsedThings = PEG.parse(things);
-    var parsedGameloop = PEG.parse(gameloop);
+    var parsedReady = PEG.parseMeta(ready);
+    var parsedSet = PEG.parse(set);
+    var parsedRun = PEG.parse(run);
 
     if(data.interprete) {
         res.render('create', {
-            meta:   meta || '', things:   things || '', gameloop:   gameloop || '',
-            c_meta: parsedMeta, c_things: parsedThings, c_gameloop: parsedGameloop});
+            ready:  ready || '', set:      set || '', run:        run || '',
+            c_meta: parsedReady, c_things: parsedSet, c_gameloop: parsedRun});
     } else if(data.compile) {
-        res.render('game', { meta: parsedMeta, set: parsedThings, loop: parsedGameloop });
+        res.render('game', { ready: parsedReady, set: parsedSet, run: parsedRun });
     }
 });
 
