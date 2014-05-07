@@ -140,7 +140,7 @@
                 // Look for image files
                 if(key === 'image') assetLoader.addImage(things[i][key]);
                 if(key === 'sound') assetLoader.addSound(things[i][key]);
-                if(key === 'music') assetLoader.addMusic(things[i][key]);
+                if(key === 'music') assetLoader.addMusic(things[i][key], things[i]);
             }
         }
 
@@ -252,10 +252,11 @@
                         break;
 
                     /* Play sound on canvas
-                        sound ─── play      */
+                        sound ─── trigger   */
                     case 'sound':
-                        if(!things[i]['play']) break;
+                        if(!things[i]['trigger']) break;
                         sounds[things[i]['sound']].cloneNode().play();
+                        delete things[i]['trigger'];
                         break;
 
                     /* Play music on canvas
@@ -263,12 +264,10 @@
                                ├─ pause
                                └─ no-loop   */
                     case 'music':
-                        if(!things[i]['play']) break;
-                        if(!musics[things[i]['music']].paused) {
+                        if(musics[things[i]['music']].paused) {
+                            if(things[i]['play'] && !things[i]['pause']) musics[things[i]['music']].play()
+                        } else {
                             if(things[i]['pause']) musics[things[i]['music']].pause();
-                        } else if(!things[i]['pause'] && things[i]['play']) {
-                            musics[things[i]['music']].currentTime = 0;
-                            musics[things[i]['music']].play();
                         }
                         break;
 

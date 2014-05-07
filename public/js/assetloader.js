@@ -3,6 +3,7 @@ var assetLoader = (function() {
 	var imagesToLoad = [];
 	var soundsToLoad = [];
 	var musicsToLoad = [];
+	var musicThings = [];
 	var numAssets = 0;
 	var numAssetsLoaded = 0;
 	var images = [];
@@ -17,7 +18,7 @@ var assetLoader = (function() {
 		fnWhenDone = fnDone;
 
 		// Add up numbers
-		numAssets = imagesToLoad.length + soundsToLoad.length;
+		numAssets = imagesToLoad.length + soundsToLoad.length + musicsToLoad.length;
 		if(numAssets === 0) {
 			fnDone();
 			return;
@@ -50,6 +51,13 @@ var assetLoader = (function() {
 		for(var i = 0; i < musicsToLoad.length; i++) {
 			var music = new Audio();
 			musics[musicsToLoad[i]] = music;
+			musics[musicsToLoad[i]].onended = function(music) {
+				if(this['no$loop']) {
+					music.pause();
+					this['ended'] = true;
+					console.log(this);
+				}
+			}.bind(musicThings[i], musics[musicsToLoad[i]]);
 			music.onloadeddata = function() {
 				this.hereComesAnAsset();
 			}.bind(this);
@@ -71,8 +79,9 @@ var assetLoader = (function() {
 		return sounds;
 	};
 
-	var addMusic = function(src) {
+	var addMusic = function(src, context) {
 		musicsToLoad.push(src);
+		musicThings.push(context);
 	};
 	var getMusics = function() {
 		return musics;
