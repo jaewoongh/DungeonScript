@@ -14,6 +14,8 @@
 </div>
 
 <script src="js/texthelper.js"></script>
+<script src="js/imagehelper.js"></script>
+<script src="js/assetloader.js"></script>
 
 <script>
 /*  ____ _    ____ ___  ____ _       _  _ ____ ____ _ ____ ___  _    ____ ____ 
@@ -26,6 +28,10 @@
 
     var canvas;         // Main game canvas
     var ctx;            // Main game canvas context
+
+    var images;         // All game images sit here
+    var sounds;         // All game sounds sit here
+    var musics;         // All game musics sit here
 
 
 /*  ____ _  _ ____ ____ _   _    ____ _  _ _  _ ____ ___ _ ____ _  _ 
@@ -126,8 +132,44 @@
         // Set things
         {{{ set }}}
 
-        // Set loop timer
-        loopTimer = setInterval(loopGame, queryThings({meta:true}).tick);
+        // Loop through things, look for assets to be loaded before starting the loop
+        for(var i = 0; i < things.length; i++) {
+            for(var key in things[i]) {
+                if(!things[i].hasOwnProperty(key)) continue;
+
+                // Look for image files
+                if(key === 'image') assetLoader.addImage(things[i][key]);
+                if(key === 'sound') assetLoader.addSound(things[i][key]);
+                if(key === 'music') assetLoader.addMusic(things[i][key]);
+            }
+        }
+
+        // Load assets all once
+        assetLoader.load(function() {
+            // Loading screen
+            ctx.rect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.font = canvas.height*0.05 + 'px Courier';
+            ctx.fillStyle = '#bbbbbb';
+            ctx.textAlign = 'center';
+            var wheelChar;
+            switch(Math.floor(Date.now()*0.01)%4) {
+                case 0: wheelChar = '-'; break;
+                case 1: wheelChar = '\\'; break;
+                case 2: wheelChar = '|'; break;
+                case 3: wheelChar = '/'; break;
+            }
+            ctx.fillText(wheelChar, canvas.width*0.5, canvas.height*0.5);
+    }, function() {
+            // Retrieve loaded assets once everything is loaded
+            images = assetLoader.getImages();
+            sounds = assetLoader.getSounds();
+            musics = assetLoader.getMusics();
+
+            // Start to loop
+            loopTimer = window.setInterval(loopGame, queryThings({meta:true}).tick);
+        });
     };
 
 
@@ -161,24 +203,73 @@
                               ├─ y: number relative to screen height
                               ├─ wrap-width: number relative to screen width
                               ├─ wrap-height: number relative to screen height
-                              ├─ text-align: start / end / center / left / right
+                              ├─ text-align: "start" / "end" / "center" / "left" / "right"
                               ├─ font: "Helvetica"
                               ├─ font-size: number relative to screen height
                               └─ font-color: "#nnnnnn"  */
                     case 'text':
                         if(!things[i]['show']) break;
                         var textOption = {
-                            text: things[i]['text'] || '',
-                            x: things[i]['x'] || 0,
-                            y: things[i]['y'] || 0.05,
-                            wrap$width: things[i]['wrap$width'] || 0,
-                            wrap$height: things[i]['wrap$height'] || 0,
-                            text$align: things[i]['text$align'] || 'start',
-                            font: things[i]['font'] || 'Andale Mono',
-                            font$size: things[i]['font$size'] || 0.05,
-                            font$color: things[i]['font$color'] || '#ffffff'
+                            text:           things[i]['text']           || '',
+                            x:              things[i]['x']              || 0,
+                            y:              things[i]['y']              || 0.05,
+                            wrap$width:     things[i]['wrap$width']     || 0,
+                            wrap$height:    things[i]['wrap$height']    || 0,
+                            text$align:     things[i]['text$align']     || 'start',
+                            font:           things[i]['font']           || 'Andale Mono',
+                            font$size:      things[i]['font$size']      || 0.05,
+                            font$color:     things[i]['font$color']     || '#ffffff'
                         };
                         textHelper.drawText(ctx, textOption);
+                        break;
+
+                    /* Show image on canvas
+                        image ─┬─ show
+                               ├─ x: number relative to screen width
+                               ├─ y: number relative to screen height
+                               ├─ width: number relative to screen width
+                               ├─ height: number relative to screen height
+                               ├─ crop-x: absolute pixel value
+                               ├─ crop-y: absolute pixel value
+                               ├─ crop-width: absolute pixel value
+                               ├─ crop-height: absolute pixel value
+                               └─ align: "center" / "corner"    */
+                    case 'image':
+                        if(!things[i]['show']) break;
+                        var imageOption = {
+                            image:          things[i]['image'],
+                            x:              things[i]['x']              || 0.5,
+                            y:              things[i]['y']              || 0.5,
+                            width:          things[i]['width'],
+                            height:         things[i]['height'],
+                            crop$x:         things[i]['crop$x'],
+                            crop$y:         things[i]['crop$y'],
+                            crop$width:     things[i]['crop$width'],
+                            crop$height:    things[i]['crop$height'],
+                            align:          things[i]['align']          || 'center'
+                        };
+                        imageHelper.drawImage(ctx, images[things[i]['image']], imageOption);
+                        break;
+
+                    /* Play sound on canvas
+                        sound ─── play      */
+                    case 'sound':
+                        if(!things[i]['play']) break;
+                        sounds[things[i]['sound']].cloneNode().play();
+                        break;
+
+                    /* Play music on canvas
+                        music ─┬─ play
+                               ├─ pause
+                               └─ no-loop   */
+                    case 'music':
+                        if(!things[i]['play']) break;
+                        if(!musics[things[i]['music']].paused) {
+                            if(things[i]['pause']) musics[things[i]['music']].pause();
+                        } else if(!things[i]['pause'] && things[i]['play']) {
+                            musics[things[i]['music']].currentTime = 0;
+                            musics[things[i]['music']].play();
+                        }
                         break;
 
                     // TODO here
