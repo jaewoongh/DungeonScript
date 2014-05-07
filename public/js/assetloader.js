@@ -54,7 +54,7 @@ var assetLoader = (function() {
 			musics[musicsToLoad[i]].onended = function(music) {
 				if(this['no$loop']) {
 					music.pause();
-					this['ended'] = true;
+					delete this['play'];
 					console.log(this);
 				}
 			}.bind(musicThings[i], musics[musicsToLoad[i]]);
@@ -88,7 +88,7 @@ var assetLoader = (function() {
 	};
 
 	var hereComesAnAsset = function() {
-		console.log('assetLoaded');
+		console.log(Math.round((numAssetsLoaded+1)/numAssets*100)+'%');
 		if(++numAssetsLoaded >= numAssets) {
 			window.clearInterval(loadingLoopTimer);
 			fnWhenDone();
