@@ -21,6 +21,9 @@
 				</li>
 				<li class="active"><a href="/create">Create</a></li>
 			</ul>
+			<div class="navbar-form navbar-right">
+				<button class="btn btn-default" onclick="goCompile()">PLAY <span class="glyphicon glyphicon-send"></span></button>
+			</div>
 		</div>
 	</div>
 </div>
@@ -31,48 +34,75 @@
 		<p>Note that you can drag bottom-right corner of the textbox to resize it freely</p>
 	</div>
 
-	<form action="/create" method="POST">
+	<form id="editor" action="/create" method="POST" target="_blank" onkeyup="setTimerForInterpreter()">
 		<div id="area-ready" class="container" style="padding:0px; margin:10px">
 			<h4>READY</h4>
-			<p>Set/modify some meta data for the entire game</p>
+			<p>Set/modify some meta data for the entire game.</p>
 			<div class="col-md-8" style="padding:0px">
-				<textarea id="txt-ready" name="ready" style="width:100%; max-width:100%; height:80px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="title: 'Awesome Dungeon'">{{ ready }}</textarea>
+				<textarea id="txt-ready" name="ready" style="width:100%; max-width:100%; height:80px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="title: 'Awesome Dungeon'" onblur="goInterprete()"></textarea>
 			</div>
-			<div class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;">
-				{{{ c_meta }}}
-			</div>
+			<div id="console-ready" class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;"></div>
 		</div>
 
 		<div id="area-set" class="container" style="padding:0px; margin:10px">
 			<h4>SET</h4>
-			<p>This runs once on the start of the game, so set some things for later use</p>
+			<p>Set things for later use.</p>
 			<div class="col-md-8" style="padding:0px">
-				<textarea id="txt-set" name="set"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="{ player, hp: 40, hp-max: 50, weapon: @short-sword }">{{ set }}</textarea>
+				<textarea id="txt-set" name="set"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="{ player, hp: 40, hp-max: 50, weapon: @short-sword }" onblur="goInterprete()"></textarea>
 			</div>
-			<div class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;">
-				{{{ c_things }}}
-			</div>
+			<div id="console-set" class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;"></div>
 		</div>
 
 		<div id="area-run" class="container" style="padding:0px; margin:10px">
 			<h4>RUN</h4>
-			<p>This runs every tick, making the game run</p>
+			<p>Write some rules for the game.</p>
 			<div class="col-md-8" style="padding:0px">
-				<textarea id="txt-run" name="run"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="player, hp<=0 { .dead, gamephase <~ { .gamephase: 'gameover' } }">{{ run }}</textarea>
+				<textarea id="txt-run" name="run"  style="width:100%; max-width:100%; height:140px; font-family:Consolas,Andale Mono,Courier; font-size:small;" placeholder="player, hp<=0 { .dead, gamephase <~ { .gamephase: 'gameover' } }" onblur="goInterprete()"></textarea>
 			</div>
-			<div class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;">
-				{{{ c_gameloop }}}
-			</div>
+			<div id="console-run" class="col-md-4" style="padding:0px 5px; word-wrap:break-word; font-family:Consolas,Andale Mono,Courier; font-size:small;"></div>
 		</div>
 
-		<div id="area-submit" class="container" style="padding:0px; margin:10px">
-			<button class="btn btn-lg btn-primary btn-block" type="submit" name="interprete" value="true">Interprete!</button>
-			<button class="btn btn-sm btn-warning btn-block" type="submit" name="compile" value="true">COMPILE & GO</button>
-		</div>
+		<!-- <div id="area-submit" class="container" style="padding:0px; margin:10px">
+			<a class="btn btn-lg btn-primary btn-block" name="interprete" value="true" onclick="goInterprete()" role="button">Interprete!</a>
+			<button class="btn btn-sm btn-warning btn-block" name="compile" value="true" onclick="goCompile()" type="submit">COMPILE & GO</button>
+		</div> -->
 	</form>
 </div>
 
 <script>
+	var timerForInterpreter;
+	var setTimerForInterpreter = function() {
+		window.clearTimeout(timerForInterpreter);
+		timerForInterpreter = window.setTimeout(goInterprete, 3000);
+	};
+
+	var goInterprete = function() {
+		$.post('/createAjax', {
+			type:	'interprete',
+			ready: 	document.getElementById('txt-ready').value,
+			set:	document.getElementById('txt-set').value,
+			run:	document.getElementById('txt-run').value
+		}, function(data) {
+			document.getElementById('console-ready').innerHTML = data['cReady'];
+			document.getElementById('console-set').innerHTML = data['cSet'];
+			document.getElementById('console-run').innerHTML = data['cRun'];
+		});
+	};
+
+	var goCompile = function() {
+		$.post('/createAjax', {
+			type:	'compile',
+			ready: 	document.getElementById('txt-ready').value,
+			set:	document.getElementById('txt-set').value,
+			run:	document.getElementById('txt-run').value
+		}, function(data) {
+			document.getElementById('console-ready').innerHTML = data['cReady'];
+			document.getElementById('console-set').innerHTML = data['cSet'];
+			document.getElementById('console-run').innerHTML = data['cRun'];
+		});
+		document.getElementById('editor').submit();
+	};
+
 	window.onload = function() {
 		document.getElementById('txt-ready').value = 'title: "text demo"\nauthor: "you"\ntick: 250';
 		document.getElementById('txt-set').value = '{ text:"hello, world", x:0.5, y:0.5, text-align:"center" }';

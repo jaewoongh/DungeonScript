@@ -30,6 +30,11 @@
     var canvas;         // Main game canvas
     var ctx;            // Main game canvas context
 
+    var keydown = [];   // Flag press key input
+    var _keybind = [];  // Default key bindings
+        _keybind['action'] = 120;   // 'x'
+        _keybind['cancel'] = 122;   // 'z'
+
     var images;         // All game images sit here
     var sounds;         // All game sounds sit here
     var musics;         // All game musics sit here
@@ -63,6 +68,15 @@
         var result = [];
         var validIndexes = [];
         for(var i = 0; i < things.length; i++) {
+            // Deal with keyboard input
+            if(things[i]['key']) delete things[i]['key'];
+            for(var k in keydown) {
+                if(!keydown.hasOwnProperty(k)) continue;
+                things[i]['key'] = things[i]['key'] || [];
+                things[i]['key'].push(k);
+                console.log(k);
+            }
+
             result.push(things[i]);     // Assume that the thing satisifies queries, and discard later when it does not
             for(var key in query) {
                 if(!query.hasOwnProperty(key)) continue;
@@ -294,6 +308,9 @@
             todo[i]();
         }
         todo = [];
+
+        // Clear keydown
+        keydown = [];
     };
 
 
@@ -321,6 +338,13 @@
     };
 
     window.onload = function() {
+        // Deal with keyboard input
+        document.onkeydown = function(evt) {
+            console.log('keydown');
+            keydown[evt.keyCode] = true;
+        };
+
+        // Start game
         setGame();
     };
 </script>

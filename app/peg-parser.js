@@ -129,7 +129,7 @@ exports.parse = function(code, callback) {
         else return mainParser.parse(code);
     } catch(err) {
         if(callback) callback(buildErrorMessage(err));
-        else return buildErrorMessage(err);
+        else return {error: true, message: buildErrorMessage(err)};
     }
 }
 
