@@ -32,8 +32,12 @@
 
     var keydown = [];   // Flag press key input
     var _keybind = [];  // Default key bindings
-        _keybind['action'] = 120;   // 'x'
-        _keybind['cancel'] = 122;   // 'z'
+        _keybind['88'] = 'action';   // 'x'
+        _keybind['90'] = 'cancel';   // 'z'
+        _keybind['37'] = 'left';
+        _keybind['38'] = 'up';
+        _keybind['39'] = 'right';
+        _keybind['40'] = 'down';
 
     var images;         // All game images sit here
     var sounds;         // All game sounds sit here
@@ -74,7 +78,6 @@
                 if(!keydown.hasOwnProperty(k)) continue;
                 things[i]['key'] = things[i]['key'] || [];
                 things[i]['key'].push(k);
-                console.log(k);
             }
 
             result.push(things[i]);     // Assume that the thing satisifies queries, and discard later when it does not
@@ -87,6 +90,9 @@
                 } else if(things[i][key]) {
                 // If there's a CHARM for query
                     if(typeof query[key] === 'function') {
+                    // Query query
+                        // Replace pre-defined key names into key value
+                        if(key === 'key' && _keybind[things[i][key]]) things[i][key] = _keybind[things[i][key]];
                         if(!query[key](things[i][key])) {
                             result.pop();
                             break;
@@ -95,7 +101,8 @@
                             if(!things[i]['meta']) validIndexes.push(i);
                         }
                     } else {
-                        if(query[key] !== true && things[i][key] !== query[key]) {
+                    // Tag query
+                        if(query[key] !== true && things[i][key][j] !== query[key]) {
                             result.pop();
                             break;
                         } else {
@@ -340,7 +347,6 @@
     window.onload = function() {
         // Deal with keyboard input
         document.onkeydown = function(evt) {
-            console.log('keydown');
             keydown[evt.keyCode] = true;
         };
 
