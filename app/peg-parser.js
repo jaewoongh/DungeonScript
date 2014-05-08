@@ -4,7 +4,9 @@ var sugar           = require('sugar');
 
 // Grammar
 var mainParser      = PEG.buildParser("                                                                                                                                                                         \
-    start           = p:(things / gameloop)*                        { return p.join('') }                                                                                                                       \
+    start           = SPACE* p:(comment / things / gameloop)*       { return p.join('') }                                                                                                                       \
+                                                                                                                                                                                                                \
+    comment         = '☃' [^☃]* '☃' space                           { return }                                                                                                                                  \
                                                                                                                                                                                                                 \
     things          = p:thingDef+                                   { return p.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
@@ -70,10 +72,13 @@ var mainParser      = PEG.buildParser("                                         
     delimiter       = ' '* [,\\n\\r]+                               { return '☃' }                                                                                                                              \
     space           = [ \\n\\r]*                                    { return '☃' }                                                                                                                              \
     SPACE           = [ \\n\\r]+ / !.                               { return '☃' }                                                                                                                              \
+    linebreak       = [\\n\\r]+ / !.                                { return '☃' }                                                                                                                              \
 ");
 
 var metaParser      = PEG.buildParser("                                                                                                                                                                         \
-    start           = p:metaCharms*                                 { return p.join('') }                                                                                                                       \
+    start           = SPACE* p:(comment / metaCharms)*               { return p.join('') }                                                                                                                       \
+                                                                                                                                                                                                                \
+    comment         = '☃' [^☃]* '☃' space                           { return }                                                                                                                                  \
                                                                                                                                                                                                                 \
     metaCharms      = a:charming b:(delimiter space charming)* space                                                                                                                                            \
                                                                     { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return 'queryThings({meta:true},function(sender){'+a+(b[0]?';':'')+b.join(';')+'});' } \
@@ -110,6 +115,7 @@ var metaParser      = PEG.buildParser("                                         
     delimiter       = ' '* [,\\n\\r]+                               { return '☃' }                                                                                                                              \
     space           = [ \\n\\r]*                                    { return '☃' }                                                                                                                              \
     SPACE           = [ \\n\\r]+ / !.                               { return '☃' }                                                                                                                              \
+    linebreak       = [\\n\\r]+ / !.                                { return '☃' }                                                                                                                              \
 ");
 
 // Export functions
