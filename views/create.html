@@ -86,6 +86,14 @@
 			document.getElementById('console-ready').innerHTML = data['cReady'];
 			document.getElementById('console-set').innerHTML = data['cSet'];
 			document.getElementById('console-run').innerHTML = data['cRun'];
+
+			if(data['cReady'] == '' && data['cSet'] == '' && data['cRun'] == '') {
+				if('localStorage' in window && window['localStorage'] !== null) {
+					localStorage.setItem('ready', document.getElementById('txt-ready').value);
+					localStorage.setItem('set', document.getElementById('txt-set').value);
+					localStorage.setItem('run', document.getElementById('txt-run').value);
+				}
+			}
 		});
 	};
 
@@ -104,8 +112,8 @@
 	};
 
 	window.onload = function() {
-		document.getElementById('txt-ready').value = 'title: "text demo"\nauthor: "you"\ntick: 250';
-		document.getElementById('txt-set').value = '{ text:"hello, world", x:0.5, y:0.5, text-align:"center" }';
-		document.getElementById('txt-run').value = 'text, !show { text <~ { .show } }\ntext, show { text <~ { .show: remove } }';
+		document.getElementById('txt-ready').value = localStorage['ready'] || 'title: "text demo"\nauthor: "you"\ntick: 80';
+		document.getElementById('txt-set').value = localStorage['set'] || '{ text:"hello, world", x:0.5, y:0.5, text-align:"center" }';
+		document.getElementById('txt-run').value = localStorage['run'] || 'text, !show { text <~ { .show } }\ntext, show { text <~ { .show: remove } }';
 	};
 </script>
