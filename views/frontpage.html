@@ -12,21 +12,39 @@
 	<div class="col-md-6">
 		<h3>Latest update</h3>
 		<ul class="list-group">
-		<li class="list-group-item">Now you have keyboard</li>
-		<li class="list-group-item">Image and sound works so well</li>
-		<li class="list-group-item">Text works</li>
+		<li class="list-group-item">Working codes save in local storage (no reset yet)</li>
+		<li class="list-group-item"><p>Now you have keyboard<br />
+		The charm 'key' attach to every thing for one tick automatically</p>
+		<pre>text, key='action' { .show, text <~ { .show: remove } }</pre></li>
+		<li class="list-group-item"><p>Image and sound works so well</p>
+		<pre>{ sample-image, image: 'http://goo.gl/hF15bH', show }
+{ sample-music, music: 'http://goo.gl/MERusF', play }
+{ sample-sound, sound: 'http://goo.gl/D1f7Ze', trigger }</pre></li>
+		<li class="list-group-item"><p>Text works</p>
+		<pre>{ sample-text, text: 'hello, world', x: 0.5, y: 0.5, show }</pre></li>
 		<li class="list-group-item">Implemented responsive canvas</li>
-		<li class="list-group-item">Documentation is ready</li>
+		<li class="list-group-item">Documentation is ready (kind of)</li>
 		<li class="list-group-item">Compiling game makes data structure and runs good</li>
 		<li class="list-group-item">Grammar parsing works beatifully</li>
 		</ul>
 	</div>
 
 	<div class="col-md-6">
+		<h3>Working on now</h3>
+		<ul class="list-group">
+		<li class="list-group-item">Making artworks to test camera, tiles, and maps<br />
+		<small>(expected to be finished by May 9)</small></li>
+		</ul>
+
 		<h3>Up next</h3>
 		<ul class="list-group">
-		<li class="list-group-item">Implement camera, tiles, and maps</li>
-		<li class="list-group-item">Create sample game</li>
+		<li class="list-group-item">Implement camera, tiles, and maps<br />
+		<small>(expected to be finished by May 10)</small></li>
+		<li class="list-group-item">Create sample game and example codes<br />
+		<small>(expected to refine till the show date)</small></li>
+		<li class="list-group-item">Make the edidtor/parser better<br />
+		<small>(will start after the show)</small></li>
+		<li class="list-group-item">Connect to cloud server for users to upload game assets</li>
 		</ul>
 	</div>
 </div>
