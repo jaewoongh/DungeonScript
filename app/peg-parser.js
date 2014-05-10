@@ -57,7 +57,7 @@ var mainParser      = PEG.buildParser("                                         
     string          = doubleQuot / singleQuot                                                                                                                                                                   \
     doubleQuot      = '\"' s:(looseLegalChar / \"'\")* '\"'         { return \"'\"+s.join('')+\"'\" }                                                                                                           \
     singleQuot      = \"'\" s:(looseLegalChar / '\"')* \"'\"        { return \"'\"+s.join('')+\"'\" }                                                                                                           \
-    looseLegalChar  = [^'\"]                                                                                                                                                                                    \
+    looseLegalChar  = c:[^'\"]                                      { return c.replace(/[\\r]/,'\\\\'+'\\r') }                                                                                                  \
     legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                                     \
     legalText       = t:legalChar+                                  { return t.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
@@ -100,7 +100,7 @@ var metaParser      = PEG.buildParser("                                         
     string          = doubleQuot / singleQuot                                                                                                                                                                   \
     doubleQuot      = '\"' s:(looseLegalChar / \"'\")* '\"'         { return \"'\"+s.join('')+\"'\" }                                                                                                           \
     singleQuot      = \"'\" s:(looseLegalChar / '\"')* \"'\"        { return \"'\"+s.join('')+\"'\" }                                                                                                           \
-    looseLegalChar  = [^'\"]                                                                                                                                                                                    \
+    looseLegalChar  = c:[^'\"]                                      { return c.replace(/[\\r]/,'\\\\'+'\\r') }                                                                                                  \
     legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                                     \
     legalText       = t:legalChar+                                  { return t.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
