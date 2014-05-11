@@ -57,7 +57,7 @@ var mainParser      = PEG.buildParser("                                         
     string          = doubleQuot / singleQuot                                                                                                                                                                   \
     doubleQuot      = '\"' s:(looseLegalChar / \"'\")* '\"'         { return \"'\"+s.join('')+\"'\" }                                                                                                           \
     singleQuot      = \"'\" s:(looseLegalChar / '\"')* \"'\"        { return \"'\"+s.join('')+\"'\" }                                                                                                           \
-    looseLegalChar  = c:[^'\"]                                      { return c.replace(/[\\r]/,'\\\\'+'\\r') }                                                                                                  \
+    looseLegalChar  = c:[^'\"]                                      { return c.replace('\\r','\\\\') }                                                                                                          \
     legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                                     \
     legalText       = t:legalChar+                                  { return t.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
@@ -76,7 +76,7 @@ var mainParser      = PEG.buildParser("                                         
 ");
 
 var metaParser      = PEG.buildParser("                                                                                                                                                                         \
-    start           = SPACE* p:(comment / metaCharms)*               { return p.join('') }                                                                                                                       \
+    start           = SPACE* p:(comment / metaCharms)*              { return p.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
     comment         = '☃' [^☃]* '☃' space                           { return }                                                                                                                                  \
                                                                                                                                                                                                                 \
@@ -100,7 +100,7 @@ var metaParser      = PEG.buildParser("                                         
     string          = doubleQuot / singleQuot                                                                                                                                                                   \
     doubleQuot      = '\"' s:(looseLegalChar / \"'\")* '\"'         { return \"'\"+s.join('')+\"'\" }                                                                                                           \
     singleQuot      = \"'\" s:(looseLegalChar / '\"')* \"'\"        { return \"'\"+s.join('')+\"'\" }                                                                                                           \
-    looseLegalChar  = c:[^'\"]                                      { return c.replace(/[\\r]/,'\\\\'+'\\r') }                                                                                                  \
+    looseLegalChar  = c:[^'\"]                                      { return c.replace('\\r','\\\\') }                                                                                                          \
     legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                                     \
     legalText       = t:legalChar+                                  { return t.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \

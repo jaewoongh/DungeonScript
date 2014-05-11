@@ -15,6 +15,7 @@
 
 <script src="js/texthelper.js"></script>
 <script src="js/imagehelper.js"></script>
+<script src="js/camerahelper.js"></script>
 <script src="js/assetloader.js"></script>
 
 <script>
@@ -107,7 +108,7 @@
                         }
                     } else {
                     // Tag query
-                        if(query[key] !== true && things[i][key][j] !== query[key]) {
+                        if(query[key] !== true && things[i][key] !== query[key]) {
                             result.pop();
                             break;
                         } else {
@@ -149,8 +150,8 @@
             author:         'unknown',
             tick:           200,
             font:           undefined,
-            targetWidth:    800,
-            targetHeight:   600,
+            'target$width':    800,
+            'target$height':   600,
             /* fixed-size:  true */
         });
 
@@ -161,10 +162,10 @@
         canvas = document.createElement('canvas');
         var meta = queryThings({meta:true});
         if(meta.fixed$size === true) {
-            canvas.width = meta.targetWidth;
-            canvas.height = meta.targetHeight;
+            canvas.width = meta['target$width'];
+            canvas.height = meta['target$height'];
         } else {
-            resizeCanvas(meta.targetWidth, meta.targetHeight);
+            resizeCanvas(meta['target$width'], meta['target$height']);
         }
         ctx = canvas.getContext('2d');
         document.getElementById('gameContainer').appendChild(canvas);
@@ -175,15 +176,61 @@
         // Set queries
         {{{ run }}}
 
-        // Loop through things, look for assets to be loaded before starting the loop
+        // Loop through things, do things that needs to be done before loop
         for(var i = 0; i < things.length; i++) {
             for(var key in things[i]) {
                 if(!things[i].hasOwnProperty(key)) continue;
 
-                // Look for image files
+                // Look for assets to load before the game starts
                 if(key === 'image') assetLoader.addImage(things[i][key]);
                 if(key === 'sound') assetLoader.addSound(things[i][key]);
                 if(key === 'music') assetLoader.addMusic(things[i][key], things[i]);
+
+                /* Set tile
+                    tile ─┬─ map-char: one character that will represent this tile on map
+                          ├─ passable: true / false
+                          ├─ here-a: image file location
+                          ├─ here-b: image file location
+                          ├─ near-a: image file location
+                          ├─ near-b: image file location
+                          ├─ far-a: image file location
+                          ├─ far-b: image file location
+                          ├─ further-a: image file location
+                          └─ further-B: image file location     */
+                if(key === 'tile') {
+                    assetLoader.addImage(things[i]['here$a']);
+                    assetLoader.addImage(things[i]['here$b']);
+                    assetLoader.addImage(things[i]['near$a']);
+                    assetLoader.addImage(things[i]['near$b']);
+                    assetLoader.addImage(things[i]['far$a']);
+                    assetLoader.addImage(things[i]['far$b']);
+                    assetLoader.addImage(things[i]['further$a']);
+                    assetLoader.addImage(things[i]['further$b']);
+                }
+
+                /* Set map with tiles
+                    map ─┬─ cols: number of columns
+                         ├─ rows: number of rows
+                         └─ tiles: long string made up with tiles' map-char     */
+                if(key === 'map') {
+                    var cols = things[i]['cols'];
+                    var rows = things[i]['rows'];
+                    var charIndex = 0;
+                    things[i]['_mapdata'] = [];
+                    for(var y = 0; y < rows; y++) {
+                        things[i]['_mapdata'][y] = [];
+                        for(var x = 0; x < cols; x++) {
+                            while(charIndex < things[i]['tiles'].length) {
+                                var tilechar = things[i]['tiles'].charAt(charIndex++);
+                                if(tilechar == ' ') continue;
+                                things[i]['_mapdata'][y][x] = tilechar;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if(key === 'console') console.log(things[i]['console']);
             }
         }
 
@@ -310,7 +357,51 @@
                         }
                         break;
 
-                    // TODO here
+                    /* Show what camera sees
+                        camera ─┬─ show
+                                ├─ in: @map
+                                ├─ on: @tile (read only)
+                                ├─ x: location on @map
+                                ├─ y: location on @map
+                                └─ heading: "north" / "east" / "west" / "south"     */
+                    case 'camera':
+                        if(things[i]['goforward']) {
+                            cameraHelper.goForward.call(things[i]);
+                            delete things[i]['goforward'];
+                        }
+                        if(things[i]['goleft']) {
+                            cameraHelper.goLeft.call(things[i]);
+                            delete things[i]['goleft'];
+                        }
+                        if(things[i]['goright']) {
+                            cameraHelper.goRight.call(things[i]);
+                            delete things[i]['goright'];
+                        }
+                        if(things[i]['gobackward']) {
+                            cameraHelper.goBackward.call(things[i]);
+                            delete things[i]['gobackward'];
+                        }
+                        if(things[i]['turnleft']) {
+                            cameraHelper.turnLeft.call(things[i]);
+                            delete things[i]['turnleft'];
+                        }
+                        if(things[i]['turnright']) {
+                            cameraHelper.turnRight.call(things[i]);
+                            delete things[i]['turnright'];
+                        }
+                        if(things[i]['turnaround']) {
+                            cameraHelper.turnAround.call(things[i]);
+                            delete things[i]['turnaround'];
+                        }
+                        if(things[i]['show']) {
+                            cameraHelper.drawPerspective(ctx, things[i], queryThings({meta:true}));
+                        }
+                        break;
+
+                    case 'console':
+                        console.log(things[i]['console']);
+                        delete things[i]['console'];
+                        break;
                 }
             }
         }
@@ -346,7 +437,7 @@
 
     window.onresize = function() {
         var meta = queryThings({meta:true});
-        resizeCanvas(meta.targetWidth, meta.targetHeight);
+        resizeCanvas(meta['target$width'], meta['target$height']);
     };
 
     window.onload = function() {
