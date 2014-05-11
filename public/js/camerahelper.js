@@ -30,6 +30,7 @@ var cameraHelper = (function() {
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['goforward'];
+        return this;
     };
 
     var goLeft = function() {
@@ -63,6 +64,7 @@ var cameraHelper = (function() {
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['goleft'];
+        return this;
     };
 
     var goRight = function() {
@@ -96,6 +98,7 @@ var cameraHelper = (function() {
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['goright'];
+        return this;
     };
 
     var goBackward = function() {
@@ -129,6 +132,7 @@ var cameraHelper = (function() {
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['gobackward'];
+        return this;
     };
 
     var turnLeft = function() {
@@ -139,6 +143,7 @@ var cameraHelper = (function() {
             case 'south':   this['heading'] = 'east';   break;
         }
         delete this['turnleft'];
+        return this;
     };
 
     var turnRight = function() {
@@ -149,6 +154,7 @@ var cameraHelper = (function() {
             case 'south':   this['heading'] = 'west';   break;
         }
         delete this['turnright'];
+        return this;
     };
 
     var turnAround = function() {
@@ -159,6 +165,7 @@ var cameraHelper = (function() {
             case 'south':   this['heading'] = 'north';  break;
         }
         delete this['turnaround'];
+        return this;
     };
 
     var drawPerspective = function(ctx, thing, meta) {
@@ -179,6 +186,7 @@ var cameraHelper = (function() {
         var th = meta['target$height'];
 
         var heading = thing['heading'];
+        if(!thing['at']) return;
         var mapdata = thing['at']['_mapdata'];
         var px = thing['x$pos'];
         var py = thing['y$pos'];
@@ -319,7 +327,7 @@ var cameraHelper = (function() {
         l();
         if(mapdata[py]) { if(mapdata[py][px]) {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['near$b']], {
-                x: align=='center'?x:x, y: y, width: w, height: h, align: align })
+                x: align=='center'?x:x, y: y, width: w, height: h, align: align });
         } }
 
         // E
@@ -342,7 +350,7 @@ var cameraHelper = (function() {
         l();
         if(mapdata[py]) { if(mapdata[py][px]) {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['here$b']], {
-                x: align=='center'?x:x, y: y, width: w, height: h, align: align })
+                x: align=='center'?x:x, y: y, width: w, height: h, align: align });
         } }
     };
 

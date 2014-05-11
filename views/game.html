@@ -359,42 +359,30 @@
 
                     /* Show what camera sees
                         camera ─┬─ show
-                                ├─ in: @map
+                                ├─ at: @map
                                 ├─ on: @tile (read only)
-                                ├─ x: location on @map
-                                ├─ y: location on @map
+                                ├─ x-pos: location on @map
+                                ├─ y-pos: location on @map
                                 └─ heading: "north" / "east" / "west" / "south"     */
                     case 'camera':
-                        if(things[i]['goforward']) {
-                            cameraHelper.goForward.call(things[i]);
-                            delete things[i]['goforward'];
-                        }
-                        if(things[i]['goleft']) {
-                            cameraHelper.goLeft.call(things[i]);
-                            delete things[i]['goleft'];
-                        }
-                        if(things[i]['goright']) {
-                            cameraHelper.goRight.call(things[i]);
-                            delete things[i]['goright'];
-                        }
-                        if(things[i]['gobackward']) {
-                            cameraHelper.goBackward.call(things[i]);
-                            delete things[i]['gobackward'];
-                        }
-                        if(things[i]['turnleft']) {
-                            cameraHelper.turnLeft.call(things[i]);
-                            delete things[i]['turnleft'];
-                        }
-                        if(things[i]['turnright']) {
-                            cameraHelper.turnRight.call(things[i]);
-                            delete things[i]['turnright'];
-                        }
-                        if(things[i]['turnaround']) {
-                            cameraHelper.turnAround.call(things[i]);
-                            delete things[i]['turnaround'];
-                        }
+                        if(!things[i]['at']) break;
                         if(things[i]['show']) {
-                            cameraHelper.drawPerspective(ctx, things[i], queryThings({meta:true}));
+                            if(things[i]['goforward']) cameraHelper.drawPerspective(ctx, cameraHelper.goForward.call(things[i]), queryThings({meta:true}));
+                            else if(things[i]['goleft']) cameraHelper.drawPerspective(ctx, cameraHelper.goLeft.call(things[i]), queryThings({meta:true}));
+                            else if(things[i]['goright']) cameraHelper.drawPerspective(ctx, cameraHelper.goRight.call(things[i]), queryThings({meta:true}));
+                            else if(things[i]['gobackward']) cameraHelper.drawPerspective(ctx, cameraHelper.goBackward.call(things[i]), queryThings({meta:true}));
+                            else if(things[i]['turnleft']) cameraHelper.drawPerspective(ctx, cameraHelper.turnLeft.call(things[i]), queryThings({meta:true}));
+                            else if(things[i]['turnright']) cameraHelper.drawPerspective(ctx, cameraHelper.turnRight.call(things[i]), queryThings({meta:true}));
+                            else if(things[i]['turnaround']) cameraHelper.drawPerspective(ctx, cameraHelper.turnAround.call(things[i]), queryThings({meta:true}));
+                            else cameraHelper.drawPerspective(ctx, things[i], queryThings({meta:true}));
+                        } else {
+                            if(things[i]['goforward']) cameraHelper.goForward.call(things[i]);
+                            if(things[i]['goleft']) cameraHelper.goLeft.call(things[i]);
+                            if(things[i]['goright']) cameraHelper.goRight.call(things[i]);
+                            if(things[i]['gobackward']) cameraHelper.goBackward.call(things[i]);
+                            if(things[i]['turnleft']) cameraHelper.turnLeft.call(things[i]);
+                            if(things[i]['turnright']) cameraHelper.turnRight.call(things[i]);
+                            if(things[i]['turnaround']) cameraHelper.turnAround.call(things[i]);
                         }
                         break;
 
