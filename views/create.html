@@ -29,11 +29,24 @@
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Sample Codes <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li class="dropdown-header">Basics</li>
-						<li><a>Not working</a></li>
-						<li><a>Not an priority</a></li>
+						<li><a id="sample-text">Text</a></li>
+						<li><a id="sample-image"><span class="glyphicon glyphicon-warning-sign"></span> Image</a></li>
+						<li><a id="sample-keyinput"><span class="glyphicon glyphicon-warning-sign"></span> Key input</a></li>
+						<li><a id="sample-dungeon">Dungeon</a></li>
+						<li><a id="sample-minimap"><span class="glyphicon glyphicon-warning-sign"></span> Minimap</a></li>
 						<li class="divider"></li>
-						<li class="dropdown-header">Advanced</li>
-						<li><a>After finishing cores</a></li>
+						<li class="dropdown-header">Demo</li>
+						<li><a><span class="glyphicon glyphicon-warning-sign"></span> Yet Another Dungeon</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li id="savedtime" class="dropdown-header">Not saved</li>
+						<li><a id="clear-editor">Clear editor</a></li>
+						<li><a id="clear-save">Clear saved code</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -44,7 +57,9 @@
 <div style="margin-top:50px">
 	<div id="area-title" class="container" style="padding:0px; margin:0px 10px">
 		<h3>Coding Page</h3>
-		<p>Note that you can drag bottom-right corner of the textbox to resize it freely</p>
+		<p>Navigate sample codes on top-right menu to learn things.<br />
+		Working codes are automatically saved for later visit.</p>
+		<p><small>Note that you can drag bottom-right corner of the textbox to resize it freely.</small></p>
 	</div>
 
 	<form id="editor" action="/create" method="POST" target="_blank" onkeyup="setTimerForInterpreter()">
@@ -105,6 +120,7 @@
 					localStorage.setItem('ready', document.getElementById('txt-ready').value);
 					localStorage.setItem('set', document.getElementById('txt-set').value);
 					localStorage.setItem('run', document.getElementById('txt-run').value);
+					document.getElementById('savedtime').innerHTML = 'Saved ' + new Date().toLocaleTimeString();
 				}
 			}
 		});
@@ -124,9 +140,41 @@
 		document.getElementById('editor').submit();
 	};
 
+	var loadSampleCode = (function() {
+		})();
+
 	window.onload = function() {
-		document.getElementById('txt-ready').value = localStorage['ready'] || '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "demo"\nauthor: "you"\ntick: 80';
-		document.getElementById('txt-set').value = localStorage['set'] || '☃ Texts to test key inputs ☃\n{ keymon, text }\n{ keynamemon, text, x:0.5, y:0.5, text-align:"center" }';
-		document.getElementById('txt-run').value = localStorage['run'] || '☃ Rules for key test texts ☃\nkeymon, key { .text:.key, .show, keymon <~ { .show:remove } }\nkeynamemon, key="cancel" { .show, .text:"cancel" }\nkeynamemon, key="action" { .show, .text:"action" }\nkeynamemon, show { keynamemon <~ { .show:remove } }';
+		if(localStorage['ready']) document.getElementById('txt-ready').value = localStorage['ready'];
+		if(localStorage['set']) document.getElementById('txt-set').value = localStorage['set'];
+		if(localStorage['run']) document.getElementById('txt-run').value = localStorage['run'];
+
+		// Set sample codes
+		var sampleReady = document.getElementById('txt-ready');
+		var sampleSet = document.getElementById('txt-set');
+		var sampleRun = document.getElementById('txt-run');
+
+		document.getElementById('clear-editor').addEventListener('click', function() {
+			sampleReady.value = '';
+			sampleSet.value = '';
+			sampleRun.value = '';
+		});
+
+		document.getElementById('clear-save').addEventListener('click', function() {
+			localStorage['ready'] = '';
+			localStorage['set'] = '';
+			localStorage['run'] = '';
+		});
+
+		document.getElementById('sample-text').addEventListener('click', function() {
+			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "text demo"\nauthor: "you"\ntick: 500';
+			sampleSet.value = '☃ You can just declare text, and later assign text value afterward\n  "just-text" here is a unique charm, and works like a name of the thing for later query ☃\n{ text, just-text, x:0.5, y:0.45, text-align:"center", font-size:0.2 }\n\n☃ You can also just set text from the beginning ☃\n{ text:"such text", blinky-text, x:0.5, y: 0.53, text-align:"center" }\n{ text:"much color", blinky-color-text, x:0.5, y:0.6, text-align:"center", font-color:"#ffff00", show }';
+			sampleRun.value = '☃ Show text ☃\njust-text { .text:"wow", .show }\n\n☃ Blink text\n   Note that remote charming(<~) takes one tick ☃\nblinky-text, !show { blinky-text <~ { .show } }\nblinky-text, show { blinky-text <~ { .show:remove } }';
+		});
+
+		document.getElementById('sample-dungeon').addEventListener('click', function() {
+			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "dungeon demo"\nauthor: "you"\ntick: 80';
+			sampleSet.value = '☃ Tiles ☃\n{ tile, t-dungeon-floor, passable:true, map-char:".",\n  here-a:   "/assets/tiles/sample_dungeon_floor_here_a.png",\n  here-b:   "/assets/tiles/sample_dungeon_floor_here_b.png",\n  near-a:   "/assets/tiles/sample_dungeon_floor_near_a.png",\n  near-b:   "/assets/tiles/sample_dungeon_floor_near_b.png",\n  far-a:    "/assets/tiles/sample_dungeon_floor_far_a.png",\n  far-b:    "/assets/tiles/sample_dungeon_floor_far_b.png",\n  further-a:"/assets/tiles/sample_dungeon_floor_further_a.png",\n  further-b:"/assets/tiles/sample_dungeon_floor_further_b.png"\n}\n{ tile, t-dungeon-wall, passable:false, map-char:"#",\n  here-a:   "/assets/tiles/sample_dungeon_wall_here_a.png",\n  here-b:   "/assets/tiles/sample_dungeon_wall_here_b.png",\n  near-a:   "/assets/tiles/sample_dungeon_wall_near_a.png",\n  near-b:   "/assets/tiles/sample_dungeon_wall_near_b.png",\n  far-a:    "/assets/tiles/sample_dungeon_wall_far_a.png",\n  far-b:    "/assets/tiles/sample_dungeon_wall_far_b.png",\n  further-a:"/assets/tiles/sample_dungeon_wall_further_a.png",\n  further-b:"/assets/tiles/sample_dungeon_wall_further_b.png"\n}\n\n☃ Map ☃\n{ map, demo-dungeon, cols:20, rows:10,\n  tiles:"####################\n         #...#.#...#....#.#.#\n         #.#.....#...#....#.#\n         #.#.#.#.###.####...#\n         #.###...#.#..#...#.#\n         #.....#............#\n         ##.####...###.###..#\n         ##...#..##.......###\n         #..####............#\n         ####################"\n}\n\n☃ Camera ☃\n{ camera }';
+			sampleRun.value = '☃ Initialize camera ☃\ncamera, !show {\n  .at:@demo-dungeon\n  .x-pos:1\n  .y-pos:1\n  .heading:"east"\n  .show\n}\n\n☃ Bind keys to navigate dungeon ☃\ncamera, key="up" { .goforward }\ncamera, key="down" { .gobackward }\ncamera, key="left" { .turnleft }\ncamera, key="right" { .turnright }';
+		});
 	};
 </script>
