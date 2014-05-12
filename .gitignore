@@ -1,2 +1,2 @@
-/sample artwork/*
-/mockup codes/*
+/sample artwork/**
+/mockup codes/**
