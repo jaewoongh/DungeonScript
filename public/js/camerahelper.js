@@ -304,7 +304,7 @@ var cameraHelper = (function() {
         if(mapdata[py]) { if(mapdata[py][px]) {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['far$a']], {
                 x: align=='center'?x:x+w*0.23, y: y, width: w*0.54, height: h, align: align,
-                crop$x: Math.round(tw*0.23), crop$y: 0, crop$width: Math.round(tw*0.46), crop$height: th });
+                crop$x: Math.round(tw*0.23), crop$y: 0, crop$width: Math.round(tw*0.54), crop$height: th });
         } }
 
         // B
