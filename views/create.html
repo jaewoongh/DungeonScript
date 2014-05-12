@@ -105,15 +105,21 @@
 	};
 
 	var goInterprete = function() {
+		var txtReady = document.getElementById('txt-ready');
+		var txtSet = document.getElementById('txt-set');
+		var txtRun = document.getElementById('txt-run');
+		var consoleReady = document.getElementById('console-ready');
+		var consoleSet = document.getElementById('console-set');
+		var consoleRun = document.getElementById('console-run');
 		$.post('/createAjax', {
 			type:	'interprete',
-			ready: 	document.getElementById('txt-ready').value,
-			set:	document.getElementById('txt-set').value,
-			run:	document.getElementById('txt-run').value
+			ready: 	txtReady.value,
+			set:	txtSet.value,
+			run:	txtRun.value
 		}, function(data) {
-			document.getElementById('console-ready').innerHTML = data['cReady'];
-			document.getElementById('console-set').innerHTML = data['cSet'];
-			document.getElementById('console-run').innerHTML = data['cRun'];
+			consoleReady.innerHTML = data['cReady'];
+			consoleSet.innerHTML = data['cSet'];
+			consoleRun.innerHTML = data['cRun'];
 
 			if(data['cReady'] == '' && data['cSet'] == '' && data['cRun'] == '') {
 				if('localStorage' in window && window['localStorage'] !== null) {
@@ -127,32 +133,37 @@
 	};
 
 	var goCompile = function() {
+		var txtReady = document.getElementById('txt-ready');
+		var txtSet = document.getElementById('txt-set');
+		var txtRun = document.getElementById('txt-run');
+		var consoleReady = document.getElementById('console-ready');
+		var consoleSet = document.getElementById('console-set');
+		var consoleRun = document.getElementById('console-run');
 		$.post('/createAjax', {
 			type:	'compile',
-			ready: 	document.getElementById('txt-ready').value,
-			set:	document.getElementById('txt-set').value,
-			run:	document.getElementById('txt-run').value
+			ready: 	txtReady.value,
+			set:	txtSet.value,
+			run:	txtRun.value
 		}, function(data) {
-			document.getElementById('console-ready').innerHTML = data['cReady'];
-			document.getElementById('console-set').innerHTML = data['cSet'];
-			document.getElementById('console-run').innerHTML = data['cRun'];
+			consoleReady.innerHTML = data['cReady'];
+			consoleSet.innerHTML = data['cSet'];
+			consoleRun.innerHTML = data['cRun'];
 		});
-		document.getElementById('editor').submit();
+		var editor = document.getElementById('editor');
+		editor.submit();
 	};
 
-	var loadSampleCode = (function() {
-		})();
-
 	window.onload = function() {
+		// Load saved code from local storage
 		if(localStorage['ready']) document.getElementById('txt-ready').value = localStorage['ready'];
 		if(localStorage['set']) document.getElementById('txt-set').value = localStorage['set'];
 		if(localStorage['run']) document.getElementById('txt-run').value = localStorage['run'];
 
-		// Set sample codes
 		var sampleReady = document.getElementById('txt-ready');
 		var sampleSet = document.getElementById('txt-set');
 		var sampleRun = document.getElementById('txt-run');
 
+		// Clear editor / saved codes
 		document.getElementById('clear-editor').addEventListener('click', function() {
 			sampleReady.value = '';
 			sampleSet.value = '';
@@ -165,6 +176,7 @@
 			localStorage['run'] = '';
 		});
 
+		// Set sample codes
 		document.getElementById('sample-text').addEventListener('click', function() {
 			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "text demo"\nauthor: "you"\ntick: 500';
 			sampleSet.value = '☃ You can just declare text, and later assign text value afterward\n  "just-text" here is a unique charm, and works like a name of the thing for later query ☃\n{ text, just-text, x:0.5, y:0.45, text-align:"center", font-size:0.2 }\n\n☃ You can also just set text from the beginning ☃\n{ text:"such text", blinky-text, x:0.5, y: 0.53, text-align:"center" }\n{ text:"much color", blinky-color-text, x:0.5, y:0.6, text-align:"center", font-color:"#ffff00", show }';

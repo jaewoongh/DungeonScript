@@ -44,9 +44,13 @@ app.post('/create', function(req, res) {
     var set = data.set;
     var run = data.run;
 
-    var parsedReady = PEG.parseMeta(ready);
-    var parsedSet = PEG.parse(set);
-    var parsedRun = PEG.parse(run);
+    var parsedReady = ready ? PEG.parseMeta(ready) : '';
+    var parsedSet = set ? PEG.parse(set) : '';
+    var parsedRun = run ? PEG.parse(run) : '';
+
+    if(parsedReady['error'] || parsedSet['error'] || parsedRun['error']) {
+        res.render('game');
+    }
 
     res.render('game', { ready: parsedReady, set: parsedSet, run: parsedRun });
 });
@@ -57,9 +61,9 @@ app.post('/createAjax', function(req, res) {
     var set = data.set;
     var run = data.run;
 
-    var parsedReady = PEG.parseMeta(ready);
-    var parsedSet = PEG.parse(set);
-    var parsedRun = PEG.parse(run);
+    var parsedReady = ready ? PEG.parseMeta(ready) : '';
+    var parsedSet = set ? PEG.parse(set) : '';
+    var parsedRun = run ? PEG.parse(run) : '';
 
     parsedReady = parsedReady['error'] ? parsedReady['message'] : '';
     parsedSet = parsedSet['error'] ? parsedSet['message'] : '';
