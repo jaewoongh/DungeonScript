@@ -30,8 +30,9 @@
 					<ul class="dropdown-menu">
 						<li class="dropdown-header">Basics</li>
 						<li><a id="sample-text">Text</a></li>
-						<li><a id="sample-image"><span class="glyphicon glyphicon-warning-sign"></span> Image</a></li>
-						<li><a id="sample-keyinput"><span class="glyphicon glyphicon-warning-sign"></span> Key input</a></li>
+						<li><a id="sample-image">Image</a></li>
+						<li><a id="sample-sound">Sound & Music</a></li>
+						<li><a id="sample-keyinput">Key input</a></li>
 						<li><a id="sample-dungeon">Dungeon</a></li>
 						<li><a id="sample-minimap"><span class="glyphicon glyphicon-warning-sign"></span> Minimap</a></li>
 						<li class="divider"></li>
@@ -181,6 +182,24 @@
 			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "text demo"\nauthor: "you"\ntick: 500';
 			sampleSet.value = '☃ You can just declare text, and later assign text value afterward\n  "just-text" here is a unique charm, and works like a name of the thing for later query ☃\n{ text, just-text, x:0.5, y:0.45, text-align:"center", font-size:0.2 }\n\n☃ You can also just set text from the beginning ☃\n{ text:"such text", blinky-text, x:0.5, y: 0.53, text-align:"center" }\n{ text:"much color", blinky-color-text, x:0.5, y:0.6, text-align:"center", font-color:"#ffff00", show }';
 			sampleRun.value = '☃ Show text ☃\njust-text { .text:"wow", .show }\n\n☃ Blink text\n   Note that remote charming(<~) takes one tick ☃\nblinky-text, !show { blinky-text <~ { .show } }\nblinky-text, show { blinky-text <~ { .show:remove } }';
+		});
+
+		document.getElementById('sample-image').addEventListener('click', function() {
+			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "image demo"\nauthor: "you"\ntick: 500';
+			sampleSet.value = '☃ If a thing has a charm named "image" and file address of the image, it will show image on "show" charm.\n   You always need to set image addresses here in SET phase, so that the image can be loaded beforehand.\n   You also need to set width or height value, but not necessarily both ☃\n{ img-werewolf, image:"http://i544.photobucket.com/albums/hh327/Traumadore/werewolf.png",\n  x:0.5, y:0.5, height:0.5, show }';
+			sampleRun.value = '';
+		});
+
+		document.getElementById('sample-sound').addEventListener('click', function() {
+			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "image demo"\nauthor: "you"\ntick: 2000';
+			sampleSet.value = '☃ If a thing has a charm named "sound" and file address of the sound, it will play sound on "trigger" charm.\n   You always need to set sound addresses here in SET phase, so that the sound can be loaded beforehand ☃\n{ eff-magic, sound:"http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Electronic/Beeps/Droid_be-TG_McL-7885/Droid_be-TG_McL-7885_hifi.mp3" }\n\n☃ Music is same as "sound", but you can pause/play the music, while you only can trigger the sound ☃\n{ bgm-demo, music:"/assets/musics/RoccoW_-_Out_of_Sight_Into_the_Mind.mp3", no-loop, play }';
+			sampleRun.value = '☃ "trigger" charm is just for single use. It detaches from the thing automatically after triggering. ☃\nsound { .trigger }  ☃ Trigger the sound every tick ☃';
+		});
+
+		document.getElementById('sample-keyinput').addEventListener('click', function() {
+			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "text demo"\nauthor: "you"\ntick: 80';
+			sampleSet.value = '☃ Set texts to show key input ☃\n{ txt-keymon, x:0, y:0 }\n{ txt-keynamemon, x:0.5, y:0.52, text-align:"center", font-size:0.15 }';
+			sampleRun.value = '☃ Get key input and show the ASCII number of the key.\n   "key" charm automatically attaches to every thing automatically on key event,\n   so you can just query any thing with key charm ☃\ntxt-keymon, key { .text:.key, .show }\n\n☃ Match specific keys. Default special keys are: action, cancel, up, down, left, right ☃\ntxt-keynamemon, key="action" { .text:"action", .show }\ntxt-keynamemon, key="cancel" { .text:"cancel", .show }\ntxt-keynamemon, key="up" { .text:"↑", .show }\ntxt-keynamemon, key="down" { .text:"↓", .show }\ntxt-keynamemon, key="left" { .text:"←", .show }\ntxt-keynamemon, key="right" { .text:"→", .show }\n\n☃ Hide texts after a tick ☃\ntext, show { text <~ { .show:remove } }';
 		});
 
 		document.getElementById('sample-dungeon').addEventListener('click', function() {
