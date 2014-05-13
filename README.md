@@ -1,6 +1,6 @@
 DungeonScript
 =============
-version 0.0.10 (May 2014)
+version 0.0.11 (May 2014)
 
 Overview
 --------
@@ -23,6 +23,7 @@ Capabilities, Documentation, and Examples
 
 Development
 -----------
+* May 12 (0.0.11) -- Rewrote parser to support flexible charmings and maths
 * May 11 (0.0.10) -- Version numbering finally has been started
 
 Legal
