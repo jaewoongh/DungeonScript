@@ -193,7 +193,7 @@
 		document.getElementById('sample-sound').addEventListener('click', function() {
 			sampleReady.value = '☃ Inside <--those--> snowmen is comment line ☃\ntitle: "image demo"\nauthor: "you"\ntick: 2000';
 			sampleSet.value = '☃ If a thing has a charm named "sound" and file address of the sound, it will play sound on "trigger" charm.\n   You always need to set sound addresses here in SET phase, so that the sound can be loaded beforehand ☃\n{ eff-magic, sound:"http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Electronic/Beeps/Droid_be-TG_McL-7885/Droid_be-TG_McL-7885_hifi.mp3" }\n\n☃ Music is same as "sound", but you can pause/play the music, while you only can trigger the sound ☃\n{ bgm-demo, music:"/assets/musics/RoccoW_-_Out_of_Sight_Into_the_Mind.mp3", no-loop, play }';
-			sampleRun.value = '☃ "trigger" charm is just for single use. It detaches from the thing automatically after triggering. ☃\nsound { .trigger }  ☃ Trigger the sound every tick ☃';
+			sampleRun.value = '☃ "trigger" charm is just for single use. It detaches from the thing automatically after triggering. ☃\nsound { .trigger }';
 		});
 
 		document.getElementById('sample-keyinput').addEventListener('click', function() {

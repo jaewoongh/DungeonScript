@@ -17,6 +17,7 @@
 					<ul class="dropdown-menu">
 						<li><a href="/documentation#basics">Basics</a></li>
 						<li><a href="/documentation#grammar">Grammar</a></li>
+						<li><a href="/documentation#builtin">Built-ins</a></li>
 					</ul>
 				</li>
 				<li><a href="/create">Create</a></li>
@@ -51,19 +52,19 @@
 	<blockquote><p class="lead">Ready, set, run!</p></blockquote>
 	<p style="font-size:large">Code of DungeonScript is divided into three sections: ready, set, and run.</p>
 	<p style="font-size:large">In <strong>ready</strong> section, you can set or override meta data of a game, like title, author, or tick time.</p>
-	<p style="font-size:large"><strong>Set</strong> section runs just once when the game starts. So it's a good idea to set all the things in this section for later use.</p>
-	<p style="font-size:large"><strong>Run</strong> section loops ceaselessly. Interval for every loop is 200 milliseconds by default. Every game-game coding can sit here.</p>
+	<p style="font-size:large"><strong>Set</strong> section is for making things. Create every thing before make use of them in the next section.</p>
+	<p style="font-size:large"><strong>Run</strong> section is for querying and manipulating things. Every game-game coding can sit here. The game executes queries line by line, sequencially, every tick.</p>
 </div>
 
 <div id="grammar" class="container" style="margin-top:50px">
 	<h1 class="page-header">DungeonScript Grammar</h1>
-	<h2 class="page-header">Thing definition</h2>
+	<h2 class="page-header">Thing creation</h2>
 
 	<p style="font-size:large">Use curly braces, have some charms separated by comma. Use colon to make charms have values.</p>
 	<pre style="font-size:medium">{ equipment, weapon, dagger, damage: 8 }
 { equipment, armor, leather-armor, defense: 2 }</pre></p><br />
 
-	<p style="font-size:large">Charms can refer other thing, but it only refers the first thing comes out of query.</p>
+	<p style="font-size:large">Charms can refer other thing, but it only refers to the first thing comes out of query.</p>
 	<pre style="font-size:medium">{ player, order: 0, weapon: @dagger, armor: @leather-armor }</pre></p><br />
 
 	<p style="font-size:large">Every comma can be replaced by line break. Of course it's totally okay to use both.</p>
@@ -74,7 +75,7 @@
 
 
 	<h2 class="page-header">Query and do</h2>
-	<h3>SIMPLE MANIPULATION</h3>
+	<h3>SIMPLE CHARMING</h3>
 	<p style="font-size:large">Write query conditions seperated by comma, then start curly block to access to query results. What is inside block is executed for every result.</p>
 	<p style="font-size:large">Dot prefix means 'local', which explicitly indicates that the charm belongs to the thing that is being dealt with now. You can freely add and manipulate charms, and also can remove charms with <em>remove</em> token.</p>
 	<pre style="font-size:medium">player, hp <= 0 {
@@ -83,30 +84,52 @@
   .awesomeness: remove
 }</pre></p><br />
 
-	<h3>REMOTE CHARMING</h3>
-	<p style="font-size:large">Sometimes, you want to change some thing according to other thing. In DungeonScript, there is a function that you can send data from one thing to another.</p>
-	<p style="font-size:large">Inside query result curly braces, write down another query, type <code>&lt;~</code>, and open another curly block. Inside that block is inside of things resulted from new query, which means that the dot prefix refers different thing from outside of the inner block. To refer to the thing before new query, you can use <code>~</code> prefix.</p>
+	<h3>PROMISED CHARMING</h3>
+	<p style="font-size:large">Sometimes, you want to change things without affecting other queries executing later on the same tick. Unlike simple charming that all the changes take place right away, there is a concept called <em>promised charming</em>, which also makes changes on things, but not right away.</p>
+	<p style="font-size:large">After writing down query conditions, add <code>&lt;~</code> before opening curly braces. By doing this, any change that you make inside the curly braces will happen on start of next tick.</p>
+	<pre style="font-size:medium">player, regeneration <~ { .hp: .hp-max }</pre><br />
+	<p style="font-size:large">Here, jesus repeats to be dead and not to be dead every tick.</p>
+	<pre style="font-size:medium">jesus, !dead { jesus <~ { .dead } }
+jesus, dead  { jesus <~ { .dead: remove } }</pre><br />
+
+	<h3>NESTED CHARMINGS</h3>
+	<p style="font-size:large">Any type of charmings can be nested. Other than <code>.</code> prefix, there also is <code>~</code> prefix to refer to one step <em>upper</em> thing.</p>
 	<pre style="font-size:medium">player, hp <= 0 {
   .hp: 0,
   .dead,
-  gamephase <~ { .gamephase: 'gameover' }
-  enemy, now-in-battle, hp>0 <~ {
+  enemy, now-in-battle, hp>0 {
     .awesomeness: ~awesomeness,
   }
+  gamephase <~ { .gamephase: 'gameover' }
 }</pre><br />
-
-	<p style="font-size:large">Sending messages takes one tick, meaning that the change is valid from next tick, not immediately.
-	<p style="font-size:large">Here, jesus repeats to be dead and not to be dead every tick.</p>
-	<pre style="font-size:medium">jesus, !dead { jesus <~ { .dead } }
-jesus, dead  { jesus <~ { .dead: remove } }</pre>
-	<p style="font-size:large">Remote charming can be nested.</p><br />
-
 
 	<h2 class="page-header">Meta data</h2>
 	<p style="font-size:large">Grammar for meta data is basically same as thing definition, without curly braces. There is a premade default meta data regardless of your code, and if you code something for meta data, you're overriding the data. So it's okay not to code anything, or if you omit something.</p>
 	<pre style="font-size:medium">title: "Awesome Dungeon"
 author: "Lord Awesomania"
-tick: 300</pre>
+tick: 300</pre><br />
+
+	<h2 class="page-header">Math</h2>
+	<p style="font-size:large">If you want to do some math for values of a charm, you <em>need to</em> use parentheses and white spaces strictly. Any mathematical expression should be inside parentheses, and white spaces are required to seperate each values and operators.</p>
+	<pre style="font-size:medium">moving-text, y<0.8 { .y: (.y + 0.01) }</pre>
+</div>
+
+<div id="builtin" class="container" style="margin-top:50px">
+	<h1 class="page-header">Built-in Behaviors</h1>
+	<h2 class="page-header">Text and Image</h2>
+	<div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <strong>DOCUMENTATION NOT READY</strong> &nbsp; But it is very probable that the functionality is there. Look for sample code on coding page!</div>
+
+	<h2 class="page-header">Sound and Music</h2>
+	<div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <strong>DOCUMENTATION NOT READY</strong> &nbsp; But it is very probable that the functionality is there. Look for sample code on coding page!</div>
+
+	<h2 class="page-header">Keyboard Input</h2>
+	<div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <strong>DOCUMENTATION NOT READY</strong> &nbsp; But it is very probable that the functionality is there. Look for sample code on coding page!</div>
+
+	<h2 class="page-header">Tiles and Maps</h2>
+	<div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <strong>DOCUMENTATION NOT READY</strong> &nbsp; But it is very probable that the functionality is there. Look for sample code on coding page!</div>
+
+	<h2 class="page-header">Dungeon and Minimap</h2>
+	<div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <strong>DOCUMENTATION NOT READY</strong> &nbsp; But it is very probable that the functionality is there. Look for sample code on coding page!</div>
 </div>
 
 <div id="letsgo" class="container" style="margin-top:50px">

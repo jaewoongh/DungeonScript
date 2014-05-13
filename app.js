@@ -65,9 +65,13 @@ app.post('/createAjax', function(req, res) {
     var parsedSet = set ? PEG.parseSet(set) : '';
     var parsedRun = run ? PEG.parseRun(run) : '';
 
-    parsedReady = parsedReady['error'] ? parsedReady['message'] : '';
-    parsedSet = parsedSet['error'] ? parsedSet['message'] : '';
-    parsedRun = parsedRun['error'] ? parsedRun['message'] : '';
+    console.log('READY: ', parsedReady);
+    console.log('SET: ', parsedSet);
+    console.log('RUN: ', parsedRun);
+
+    parsedReady = parsedReady['error'] ? parsedReady['error'] : '';
+    parsedSet = parsedSet['error'] ? parsedSet['error'] : '';
+    parsedRun = parsedRun['error'] ? parsedRun['error'] : '';
 
     res.send({cReady: parsedReady, cSet: parsedSet, cRun: parsedRun});
 });

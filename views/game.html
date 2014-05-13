@@ -72,8 +72,10 @@
 
     var queryThings = function() {
         // arguments[0] should be a query object, while arguments[1] being callback function
+        // arguments[2] tells if the query should rearrange things -- it's only true when directly called from parser
         var query = arguments[0] || {};
         var callback = arguments[1] || undefined;
+        var rearrange = arguments[2] || false;
 
         var result = [];
         var validIndexes = [];
@@ -102,27 +104,28 @@
                         if(!query[key](things[i][key])) {
                             result.pop();
                             break;
-                        } else {
-                            // Finally it turned out to be valid!
-                            if(!things[i]['meta']) validIndexes.push(i);
                         }
                     } else {
                     // Tag query
                         if(query[key] !== true && things[i][key] !== query[key]) {
                             result.pop();
                             break;
-                        } else {
-                            // Finally it turned out to be valid!
-                            if(!things[i]['meta']) validIndexes.push(i);
                         }
                     }
                 }
+                // Finally it turned out to be valid!
+                if(!things[i]['meta']) validIndexes.push(i);
             }
         }
 
         // Rearrange things -- queried thing goes on top of others
-        for(var i = 0; i < validIndexes.length; i++) {
-            things = things.concat(things.splice(validIndexes[i], 1));
+        if(rearrange) {
+            for(var i = 0; i < validIndexes.length; i++) {
+                things = things.concat(things.splice(validIndexes[i], 1));
+                for(var j = i+1; j < validIndexes.length; j++) {
+                    if(validIndexes[i] < validIndexes[j]) validIndexes[j]--;
+                }
+            }
         }
 
         // Call callback function
