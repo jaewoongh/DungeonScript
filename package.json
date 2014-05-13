@@ -1,6 +1,6 @@
 {
   "name": "DungeonScript",
-  "version": "0.0.0",
+  "version": "0.0.11",
   "description": "A language for old-school first person dungeon crawler",
   "main": "app.js",
   "scripts": {
