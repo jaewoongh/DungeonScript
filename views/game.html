@@ -274,6 +274,12 @@
         ctx.fillStyle = '#000000';
         ctx.fill();
 
+        // Run to-do, and reset it
+        for(var i = 0; i < todo.length; i++) {
+            todo[i]();
+        }
+        todo = [];
+
         // Loop through and run queries
         for(var i = 0; i < queries.length; i++) {
             queries[i]();
@@ -394,12 +400,6 @@
                 }
             }
         }
-
-        // Run to-do, and reset it
-        for(var i = 0; i < todo.length; i++) {
-            todo[i]();
-        }
-        todo = [];
 
         // Clear keydown
         keydown = [];
