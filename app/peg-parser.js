@@ -7,8 +7,8 @@ var commonRule      = "                                                         
     comment         = '☃' [^☃]* '☃' space                           { return }                                                                                                                                  \
                                                                                                                                                                                                                 \
     value           = v:(literal / charmChain)                      { return '('+v+')' }    \
-    charmChain      = p:charmPrefix? a:legalText b:('.' legalText)* { for(var i=0;i<(b.length);i++){b[i]=b[i].join('')} return (p?(p=='@'?'queryThings({'+a+':true})':p+a):a)+b.join('') }  \
-    charmPrefix     = '.' { return 'this.' } / '~' { return 'sender.' } / '@'   \
+    charmChain      = p:charmPrefix? a:legalText b:('.' legalText)* { for(var i=0;i<(b.length);i++){b[i]=b[i].join('')} return (p?(p=='@'?'queryThings({'+a+':true})':(p=='\*'?queryThings({'+a+':true},null,null,true):p+a)):a)+b.join('') }  \
+    charmPrefix     = '.' { return 'this.' } / '~' { return 'sender.' } / '@' / '\*'   \
     \
     block           = '(' space a:(block / value) b:(SPACE mathOp SPACE (block / value))* space ')' \
                                                                     { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃').join('')} return a+b.join('') }  \
@@ -65,14 +65,15 @@ var runParser       = PEG.buildParser(" \
     start           = SPACE* comment? p:doings+                     { for(var i=0;i<(p.length);i++){p[i]='queries.push(function(){'+p[i]+'});'} return p.join('') }   \
     dododo          = a:(doings / does) b:(delimiter space (doings / does))*                \
                                                                     { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+b.join('') }   \
-    doings          = a:(comment / remoteCharming / queryAndDo) b:(delimiter space (comment / remoteCharming / queryAndDo))*   \
+    doings          = a:(comment / remoteCharming / queryAndDo) b:(delimiter space (comment / remoteCharming / queryAndDo))* space   \
                                                                     { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+b.join('') }   \
     \
-    queryAndDo      = q:queries space '{' space d:dododo space '}'   \
-                                                                    { return 'queryThings.call(this,{'+q+'},function(sender){'+d+'},true);' }  \
+    queryAndDo      = p:'\*'? space q:queries space '{' space d:dododo space '}'   \
+                                                                    { return 'queryThings.call(this,{'+q+'},function(sender){'+d+'},true'+(p=='\*'?',true);':');') }  \
     queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b[0]?',':'')+b.join(',') }    \
     query           = queryQuery / tagQuery     \
-    queryQuery      = c:legalText space o:queryOp space v:(block / value)     { return c+':function(a){return a'+o+v+'}' }    \
+    queryQuery      = c:legalText space o:queryOp space v:(block / value)   \
+                                                                    { return c+':function(a){return a'+o+v+'}' }    \
     tagQuery        = n:'!'? t:legalText                            { return n=='!'?(t+':undefined'):(t+':true') }  \
     \
     does            = a:(localDo / superDo) b:(delimiter space (localDo / superDo))*                                                                                                                            \
@@ -86,8 +87,8 @@ var runParser       = PEG.buildParser(" \
     superTag        = '~' t:legalText                               { return 'sender.'+t+'=true;' }                                                                                                             \
     superAssign     = '~' c:legalText space ':' space v:(block / value)       { return 'sender.'+c+'='+v+';' }                                                                                                            \
     \
-    remoteCharming  = q:queries space '<~' space '{' space d:dododo space '}'    \
-                                                                    { return 'todo.push(queryThings.bind(this,{'+q+'},function(sender){'+d+'},true));' }                                                             \
+    remoteCharming  = p:'\*'? space q:queries space '<~' space '{' space d:dododo space '}'    \
+                                                                    { return 'todo.push(queryThings.bind(this,{'+q+'},function(sender){'+d+'},true'+(p=='\*'?',true':'')+'));' }                                                             \
 "+commonRule)
 
 
@@ -97,8 +98,8 @@ exports.parseReady = function(code, callback) {
         if(callback) callback(undefined, readyParser.parse(code));
         else return readyParser.parse(code);
     } catch(err) {
-        if(callback) callback(buildErrorMessage(err));
-        else return buildErrorMessage(err);
+        if(callback) callback({error: buildErrorMessage(err)});
+        else return {error: buildErrorMessage(err)};
     }
 }
 
@@ -107,8 +108,8 @@ exports.parseSet = function(code, callback) {
         if(callback) callback(undefined, setParser.parse(code));
         else return setParser.parse(code);
     } catch(err) {
-        if(callback) callback(buildErrorMessage(err));
-        else return buildErrorMessage(err);
+        if(callback) callback({error: buildErrorMessage(err)});
+        else return {error: buildErrorMessage(err)};
     }
 }
 
