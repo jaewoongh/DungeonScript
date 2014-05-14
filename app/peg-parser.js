@@ -11,11 +11,11 @@ var commonRule      = "                                                         
     charmPrefix     = '.' { return 'this.' } / '~' { return 'sender.' } / '@' / '\*'   \
     \
     block           = '(' space a:(block / value) b:(SPACE mathOp SPACE (block / value))* space ')' \
-                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃').join('')} return a+b.join('') }  \
+                                                                    { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃').join('')} return '('+a+b.join('')+')' }  \
     mathOp          = [-+*/]    \
     queryOp         = o:('=' / '>=' / '<=' / '>' / '<' / '!=')      { return o=='='?'==':o }                                                                                                                    \
     \
-    literal         = number / remove / bool / string                                                                                                                                                           \
+    literal         = number / specials / bool / string                                                                                                                                                           \
                                                                                                                                                                                                                 \
     string          = doubleQuot / singleQuot                                                                                                                                                                   \
     doubleQuot      = '\"' s:(looseLegalChar / \"'\")* '\"'         { return \"'\"+s.join('')+\"'\" }                                                                                                           \
@@ -24,7 +24,9 @@ var commonRule      = "                                                         
     legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                                     \
     legalText       = t:legalChar+                                  { return t.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
-    remove          = c:'remove'                                    { return 'undefined' }                                                                                                                      \
+    specials        = remove / random   \
+    remove          = 'remove'                                      { return 'undefined' }                                                                                                                      \
+    random          = 'random'                                      { return 'Math.random()' }    \
     bool            = 'true' / 'false'                                                                                                                                                                          \
                                                                                                                                                                                                                 \
     number          = real / integer                                                                                                                                                                            \
@@ -73,7 +75,7 @@ var runParser       = PEG.buildParser(" \
     queries         = a:query b:(delimiter space query)*            { for(var i=0;i<(b.length);i++){b[i]=b[i].exclude('☃')} return a+(b[0]?',':'')+b.join(',') }    \
     query           = queryQuery / tagQuery     \
     queryQuery      = c:legalText space o:queryOp space v:(block / value)   \
-                                                                    { return c+':function(a){return a'+o+v+'}' }    \
+                                                                    { return c+':function(a){return (a'+o+v+')}' }    \
     tagQuery        = n:'!'? t:legalText                            { return n=='!'?(t+':undefined'):(t+':true') }  \
     \
     does            = a:(localDo / superDo) b:(delimiter space (localDo / superDo))*                                                                                                                            \

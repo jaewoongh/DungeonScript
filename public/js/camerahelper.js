@@ -8,22 +8,42 @@ var cameraHelper = (function() {
             case 'north':
                 if(y <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
-                if(tileAhead['passable']) y--;
+                if(tileAhead['passable']) {
+                    y--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'east':
                 if(x >= map['cols']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
-                if(tileAhead['passable']) x++;
+                if(tileAhead['passable']) {
+                    x++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'west':
                 if(x <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
-                if(tileAhead['passable']) x--;
+                if(tileAhead['passable']) {
+                    x--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'south':
                 if(y >= map['rows']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
-                if(tileAhead['passable']) y++;
+                if(tileAhead['passable']) {
+                    y++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});
@@ -42,22 +62,42 @@ var cameraHelper = (function() {
             case 'east':
                 if(y <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
-                if(tileAhead['passable']) y--;
+                if(tileAhead['passable']) {
+                    y--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'south':
                 if(x >= map['cols']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
-                if(tileAhead['passable']) x++;
+                if(tileAhead['passable']) {
+                    x++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'north':
                 if(x <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
-                if(tileAhead['passable']) x--;
+                if(tileAhead['passable']) {
+                    x--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'west':
                 if(y >= map['rows']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
-                if(tileAhead['passable']) y++;
+                if(tileAhead['passable']) {
+                    y++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});
@@ -76,22 +116,42 @@ var cameraHelper = (function() {
             case 'west':
                 if(y <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
-                if(tileAhead['passable']) y--;
+                if(tileAhead['passable']) {
+                    y--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'north':
                 if(x >= map['cols']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
-                if(tileAhead['passable']) x++;
+                if(tileAhead['passable']) {
+                    x++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'south':
                 if(x <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
-                if(tileAhead['passable']) x--;
+                if(tileAhead['passable']) {
+                    x--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'east':
                 if(y >= map['rows']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
-                if(tileAhead['passable']) y++;
+                if(tileAhead['passable']) {
+                    y++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});
@@ -110,22 +170,42 @@ var cameraHelper = (function() {
             case 'south':
                 if(y <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
-                if(tileAhead['passable']) y--;
+                if(tileAhead['passable']) {
+                    y--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'east':
                 if(x >= map['cols']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
-                if(tileAhead['passable']) x--;
+                if(tileAhead['passable']) {
+                    x--;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'west':
                 if(x <= 0) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
-                if(tileAhead['passable']) x++;
+                if(tileAhead['passable']) {
+                    x++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
             case 'north':
                 if(y >= map['rows']-1) break;
                 var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
-                if(tileAhead['passable']) y++;
+                if(tileAhead['passable']) {
+                    y++;
+                    this['moved'] = true;
+                } else {
+                    this['blocked'] = true;
+                }
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});

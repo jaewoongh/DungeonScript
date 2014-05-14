@@ -10,6 +10,7 @@ var textHelper = (function() {
 		ctx.fillStyle = option['font$color'];
 		ctx.textAlign = option['text$align'];
 		if(option['wrap$width'] === 0 && option['wrap$height'] === 0) {
+			if(typeof text === 'number') text = text.toString();
 			var textlines = text.split('\n');
 			for(var i = 0; i < textlines.length; i++) {
 				ctx.fillText(textlines[i], x, y + i*fontSize);
