@@ -59,8 +59,12 @@
 
     Usage: 
         queryThings({ match:charm, maybe:onemore });
-            -> Return thing(s) that matches conditions
+            -> Return the first thing that matches conditions
             -> For use of: { charm: @thing }
+
+        queryThings({ match:charm, maybe:onemore });
+            -> Return random one among things that match conditions
+            -> For use of: *charm { .charm }
 
         queryThings({ match:charm }, function(sender) {
             this.charm = isNowThis;
@@ -73,9 +77,11 @@
     var queryThings = function() {
         // arguments[0] should be a query object, while arguments[1] being callback function
         // arguments[2] tells if the query should rearrange things -- it's only true when directly called from parser
+        // arguments[3] tells if the query will return random one among all the results
         var query = arguments[0] || {};
         var callback = arguments[1] || undefined;
         var rearrange = arguments[2] || false;
+        var pickrandomone = arguments[3] || false;
 
         var result = [];
         var validIndexes = [];
@@ -131,12 +137,16 @@
         // Call callback function
         if(callback) {
             // Call callback function with scope
-            for(var i = 0; i < result.length; i++) {
-                callback.call(result[i], this);
+            if(pickrandomone) {
+                callback.call(result[Math.floor(Math.random()*result.length)], this);
+            } else {
+                for(var i = 0; i < result.length; i++) {
+                    callback.call(result[i], this);
+                }
             }
         } else {
-            // Or just return the first matched THING
-            return result[0];
+            // Or just return the first matched THING or randomly chosen one
+            return result[pickrandomone ? Math.floor(Math.random()*result.length) : 0];
         }
     };
 
@@ -201,14 +211,14 @@
                           ├─ further-a: image file location
                           └─ further-B: image file location     */
                 if(key === 'tile') {
-                    assetLoader.addImage(things[i]['here$a']);
-                    assetLoader.addImage(things[i]['here$b']);
-                    assetLoader.addImage(things[i]['near$a']);
-                    assetLoader.addImage(things[i]['near$b']);
-                    assetLoader.addImage(things[i]['far$a']);
-                    assetLoader.addImage(things[i]['far$b']);
-                    assetLoader.addImage(things[i]['further$a']);
-                    assetLoader.addImage(things[i]['further$b']);
+                    if(things[i]['here$a']) assetLoader.addImage(things[i]['here$a']);
+                    if(things[i]['here$b']) assetLoader.addImage(things[i]['here$b']);
+                    if(things[i]['near$a']) assetLoader.addImage(things[i]['near$a']);
+                    if(things[i]['near$b']) assetLoader.addImage(things[i]['near$b']);
+                    if(things[i]['far$a']) assetLoader.addImage(things[i]['far$a']);
+                    if(things[i]['far$b']) assetLoader.addImage(things[i]['far$b']);
+                    if(things[i]['further$a']) assetLoader.addImage(things[i]['further$a']);
+                    if(things[i]['further$b']) assetLoader.addImage(things[i]['further$b']);
                 }
 
                 /* Set map with tiles
@@ -332,6 +342,7 @@
                                └─ align: "center" / "corner"    */
                     case 'image':
                         if(!things[i]['show']) break;
+                        if(!things[i]['image']) break;
                         var imageOption = {
                             image:          things[i]['image'],
                             x:              things[i]['x']              || 0.5,
