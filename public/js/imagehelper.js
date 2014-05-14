@@ -1,5 +1,6 @@
 var imageHelper = (function() {
     var drawImage = function(ctx, img, option) {
+        if(!img) return;
         var x = option['x'] * ctx.canvas.width;
         var y = option['y'] * ctx.canvas.height;
         var w = option['width'] * ctx.canvas.width;
