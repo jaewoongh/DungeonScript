@@ -6,7 +6,7 @@ var sugar           = require('sugar');
 var commonRule      = "                                                                                                                                                                                         \
     comment         = '☃' [^☃]* '☃' space                           { return }                                                                                                                                  \
                                                                                                                                                                                                                 \
-    value           = v:(literal / charmChain)                      { return '('+v+')' }    \
+    value           = v:(comment / literal / charmChain)            { return '('+v+')' }    \
     charmChain      = p:charmPrefix? a:legalText b:('.' legalText)* { for(var i=0;i<(b.length);i++){b[i]=b[i].join('')} return (p?(p=='@'?'queryThings({'+a+':true})':(p=='\*'?queryThings({'+a+':true},null,null,true):p+a)):a)+b.join('') }  \
     charmPrefix     = '.' { return 'this.' } / '~' { return 'sender.' } / '@' / '\*'   \
     \
@@ -24,9 +24,10 @@ var commonRule      = "                                                         
     legalChar       = c:[a-zA-Z0-9_-]                               { return c=='-'?'$':c }                                                                                                                     \
     legalText       = t:legalChar+                                  { return t.join('') }                                                                                                                       \
                                                                                                                                                                                                                 \
-    specials        = remove / random   \
+    specials        = remove / random / dice   \
     remove          = 'remove'                                      { return 'undefined' }                                                                                                                      \
     random          = 'random'                                      { return 'Math.random()' }    \
+    dice            = 'dice' n:digit                                { return 'Math.floor(Math.random()*'+n+')+1'}   \
     bool            = 'true' / 'false'                                                                                                                                                                          \
                                                                                                                                                                                                                 \
     number          = real / integer                                                                                                                                                                            \

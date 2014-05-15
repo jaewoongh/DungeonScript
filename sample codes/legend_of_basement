@@ -1,0 +1,260 @@
+_    ____ ____ ____ _  _ ___     ____ ____    ___  ____ ____ ____ _  _ ____ _  _ ___ 
+|    |___ | __ |___ |\ | |  \    |  | |___    |__] |__| [__  |___ |\/| |___ |\ |  |  
+|___ |___ |__] |___ | \| |__/    |__| |       |__] |  | ___] |___ |  | |___ | \|  |  
+                                                                                     
+
+
+READY ==============================================================================
+
+
+☃ Inside <--those--> snowmen is comment line ☃
+title: "Legend of Basement"
+author: "Jaewoong Hwang"
+tick: 80
+
+
+
+
+SET ================================================================================
+
+
+☃ Key monitor text for dungeon navigation ☃
+{ keymon, text, x:0.5, y:0.5, text-align:"center" }
+
+☃ Game phase & default text positions ☃
+{ gamephase:"start" }
+{ txt-top-center, x:0.5, y:0.1, text-align:"center" }
+{ txt-bottom-center, x:0.5, y:0.9, text-align:"center" }
+{ txt-upper-left, x:0.05, y:0.3 }
+{ txt-lower-left, x:0.05, y:0.7 }
+{ txt-upper-right, x:0.95, y:0.3, text-align:"right" }
+{ txt-lower-right, x:0.95, y:0.7, text-align:"right" }
+
+☃ Title screen ☃
+{ img-cover, image:"/assets/images/yad_cover.png", x:0.5, y:0.5, width:1.0 }
+{ txt-press, text:"PRESS ACTION KEY", x:0.1, y:0.81, font-size:0.05 }
+{ txt-keys, text:"[x] action\n[z] cancel\n[arrow] move", x:0.1, y:0.85, font-size:0.03 }
+
+☃ Tile images ☃
+{ tile-images,
+  floor-ha: "/assets/images/tiles/dungeon_floor_lbrown_here_a.png"
+  floor-hb: "/assets/images/tiles/dungeon_floor_lbrown_here_b.png"
+  floor-na: "/assets/images/tiles/dungeon_floor_lbrown_near_a.png"
+  floor-nb: "/assets/images/tiles/dungeon_floor_lbrown_near_b.png"
+  floor-fa: "/assets/images/tiles/dungeon_floor_lbrown_far_a.png"
+  floor-fb: "/assets/images/tiles/dungeon_floor_lbrown_far_b.png"
+  floor-ua: "/assets/images/tiles/dungeon_floor_lbrown_further_a.png"
+  floor-ub: "/assets/images/tiles/dungeon_floor_lbrown_further_b.png"
+
+  crack-ha: "/assets/images/tiles/dungeon_crack_lbrown_here_a.png"
+  crack-nb: "/assets/images/tiles/dungeon_crack_lbrown_near_b.png"
+  crack-fa: "/assets/images/tiles/dungeon_crack_lbrown_far_a.png"
+  crack-ua: "/assets/images/tiles/dungeon_crack_lbrown_further_a.png"
+
+  wall-ha: "/assets/images/tiles/dungeon_wall_lbrown_here_a.png"
+  wall-na: "/assets/images/tiles/dungeon_wall_lbrown_near_a.png"
+  wall-nb: "/assets/images/tiles/dungeon_wall_lbrown_near_b.png"
+  wall-fa: "/assets/images/tiles/dungeon_wall_lbrown_far_a.png"
+  wall-fb: "/assets/images/tiles/dungeon_wall_lbrown_far_b.png"
+  wall-ua: "/assets/images/tiles/dungeon_wall_lbrown_further_a.png"
+  wall-ub: "/assets/images/tiles/dungeon_wall_lbrown_further_b.png"
+}
+
+☃ Tiles ☃
+{ tile, t-dungeon-floor, passable:true, map-char:".",
+  here-a:   @tile-images.floor-ha
+  here-b:   @tile-images.floor-hb
+  near-a:   @tile-images.floor-na
+  near-b:   @tile-images.floor-nb
+  far-a:    @tile-images.floor-fa
+  far-b:    @tile-images.floor-fb
+  further-a:@tile-images.floor-ua
+  further-b:@tile-images.floor-ub
+}
+
+{ tile, t-dungeon-crack, passable:false, map-char:"=",
+  here-a:   @tile-images.crack-ha
+  near-b:   @tile-images.crack-nb
+  far-a:    @tile-images.crack-fa
+  further-a:@tile-images.crack-ua
+}
+
+{ tile, t-dungeon-wall, passable:false, map-char:"#",
+  here-a:   @tile-images.wall-ha
+  near-a:   @tile-images.wall-na
+  near-b:   @tile-images.wall-nb
+  far-a:    @tile-images.wall-fa
+  far-b:    @tile-images.wall-fb
+  further-a:@tile-images.wall-ua
+  further-b:@tile-images.wall-ub
+}
+
+{ tile, t-dungeon-secret-wall, passable:true, map-char:"%",
+  here-a:   @tile-images.wall-ha
+  here-b:   @tile-images.floor-hb
+  near-a:   @tile-images.wall-na
+  near-b:   @tile-images.wall-nb
+  far-a:    @tile-images.wall-fa
+  far-b:    @tile-images.wall-fb
+  further-a:@tile-images.wall-ua
+  further-b:@tile-images.wall-ub
+}
+
+☃ Map ☃
+{ map, dungeon-b1, cols:30, rows:15,
+  tiles:"##############################
+         #######.....###.....##########
+         #######.....###.....###.....=#
+         ####.##.....###.....###.######
+         ####.####.#######.#####.######
+         ###....##.#######.#####..%####
+         ######.#...#####...######...##
+         =........#...#...#...#.......#
+         ######.#####...#####...##...##
+         ###....######.#######.########
+         ####.########.#######.########
+         ####.######.....###.....######
+         ###########.....###.....######
+         ###########.....###.....######
+         ##############################"
+}
+
+☃ Camera ☃
+{ camera }
+
+☃ Stash ☃
+{ weapon:"Fist", w-fist, attack:3, defense:1 }
+
+☃ Player ☃
+{ player, hp:50, hp-max:50, weapon:@w-fist }
+
+☃ Monsters ☃
+{ encounter:0 }
+{ monster:"Giant Rat", m-giant-rat, image:"/assets/images/monsters/monster_giant_rat.png",
+  x:0.5, y:0.5, width:1, height:1
+  hp:15, hp-max:15, attack:3, defense:1 }
+
+
+
+
+RUN ================================================================================
+
+
+☃ Rules for start game phase ☃
+gamephase="start" {
+  img-cover, !show { .show }
+  txt-keys, !show { .show }
+  txt-press, !show { .show }
+  gamephase { .gamephase:"title" }
+}
+
+☃ Rules for title phase ☃
+gamephase="title" {
+  key="action" {
+    camera <~ { .at:@dungeon-b1, .x-pos:1, .y-pos:7, .heading:"east", .show }
+    dungeon-b1 <~ { .now-at }
+    gamephase <~ { .gamephase:"navigation" }
+    img-cover <~ { .show:remove }
+    txt-keys <~ { .show:remove }
+    txt-press { .show:remove }
+  }
+}
+
+☃ Rules for map navigation ☃
+gamephase="navigation" {
+  camera, key="up" { .goforward }
+  camera, key="down" { .gobackward }
+  camera, key="left" { .turnleft  }
+  camera, key="right" { .turnright }
+  camera, moved { encounter { .encounter:(.encounter + random * 5) }, .moved:remove }
+
+  txt-lower-left { .text:("[action]\n\n\n[cancel]\nStatus"),
+                   .font-size:0.04, .show }
+
+  keymon, key="up" { .text:"↑", .show, .x:0.5, .y:0.5, .font-size:0.08 }
+  keymon, key="down" { .text:"↓", .show, .x:0.5, .y:0.5, .font-size:0.08 }
+  keymon, key="left" { .text:"↰", .show, .x:0.5, .y:0.5, .font-size:0.06 }
+  keymon, key="right" { .text:"↱", .show, .x:0.5, .y:0.5, .font-size:0.06 }
+  keymon, show <~ { .show:remove }
+
+  encounter>20 { .encounter:0, gamephase { .gamephase:"into-battle" } }
+}
+
+☃ Rules for battle phase ☃
+gamephase="into-battle" {
+  *monster { .now-battling }
+  txt-top-center, !show { .text:@now-battling.monster, .show }
+  now-battling, !show { .show, .x:1.5 }
+  now-battling, show { .x:(.x + (0.5 - .x) * 0.7) }
+  now-battling, x<0.501 { gamephase <~ { .gamephase:"battle", .battlephase:"myturn" } }
+}
+
+gamephase="battle" {
+  camera <~ { .width:(.width + (1 - .width) * 0.7), .height:(.height + (1 - .height) * 0.7) }
+  txt-top-center { .text:@now-battling.monster }
+  now-battling { .x:(.x + (0.5 - .x) * 0.7) }
+
+  txt-upper-left {
+    .font-color:"#ffffff"
+    player, hp<(@player.hp-max * 0.2) { ~font-color:"#ff7733" },
+    .text:("Your Health\n" + @player.hp + "/" + @player.hp-max),
+    .font-size:0.05, .show
+  }
+  txt-lower-left { .text:("[action]\nAttack w/ " + @player.weapon.weapon + "\n\n[cancel]\nRetreat"),
+                   .font-size:0.04, .show }
+
+  txt-upper-right {
+    .font-size:0.05
+    .text:"Enemy looks\nDEAD"
+    .show
+    now-battling, hp>0 { ~text:"Enemy looks\nDYING", ~font-color:"#ff7733" }
+    now-battling, hp>(@now-battling.hp-max * 0.25) { ~text:"Enemy looks\nPAINFUL", ~font-color:"#ffffff" }
+    now-battling, hp>(@now-battling.hp-max * 0.50) { ~text:"Enemy looks\nOKAY", ~font-color:"#ffffff" }
+    now-battling, hp>(@now-battling.hp-max * 0.75) { ~text:"Enemy looks\nHEALTHY", ~font-color:"#ffffff" }
+  }
+}
+
+gamephase="battle", battlephase="myturn" {
+  player, key="action", !attacked {
+    .attacked
+    now-battling { .damage:(~weapon.attack + dice4 - 2) }
+    now-battling, damage>0 { .hp:(.hp - .damage), .x:(.x + 0.02), .damage:remove }
+    now-battling, damage<=0 { .damage:remove }
+  }
+
+  player, attacked {
+    now-battling, hp<=0 {
+      .hp:.hp-max
+      .now-battling:remove
+      .x:1.5
+      gamephase <~ { .gamephase:"navigation" }
+      player <~ { .attacked:remove }
+      camera <~ { .width:1, .height:1 }
+    }
+    now-battling, hp>0, x<0.501 { gamephase <~ { .battlephase:"yourturn" } }
+  }
+}
+
+gamephase="battle", battlephase="yourturn" {
+  now-battling { 
+    player, hp>0 {
+      .damage:(~attack + dice4 - .weapon.defense - dice4)
+      .attacked:remove
+    }
+  },
+  player, damage>0 { .hp:(.hp - .damage), camera <~ { .width:1.02, .height:1.02 }, .damage:remove }
+  player, damage<= 0 { .damage:remove }
+  player, hp<=0 { .hp:0, .dead }
+  player, dead <~ {
+    camera, width<1.001, height<1.001 <~ {
+      gamephase <~ { .gamephase:"start" }
+      player <~ { .hp:.hp-max, .dead:remove }
+      camera <~ { .width:1, .height:1 }
+      now-battling <~ {
+        .now-battling:remove
+        .hp:.hp-max
+      }
+    }
+  }
+  player, hp>0 { gamephase <~ { .battlephase:"myturn" } }
+}

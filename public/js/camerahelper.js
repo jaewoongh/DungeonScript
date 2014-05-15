@@ -7,7 +7,7 @@ var cameraHelper = (function() {
         switch(heading) {
             case 'north':
                 if(y <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]}) || {};
                 if(tileAhead['passable']) {
                     y--;
                     this['moved'] = true;
@@ -17,7 +17,7 @@ var cameraHelper = (function() {
                 break;
             case 'east':
                 if(x >= map['cols']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]}) || {};
                 if(tileAhead['passable']) {
                     x++;
                     this['moved'] = true;
@@ -27,7 +27,7 @@ var cameraHelper = (function() {
                 break;
             case 'west':
                 if(x <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]}) || {};
                 if(tileAhead['passable']) {
                     x--;
                     this['moved'] = true;
@@ -37,7 +37,7 @@ var cameraHelper = (function() {
                 break;
             case 'south':
                 if(y >= map['rows']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]}) || {};
                 if(tileAhead['passable']) {
                     y++;
                     this['moved'] = true;
@@ -61,7 +61,7 @@ var cameraHelper = (function() {
         switch(heading) {
             case 'east':
                 if(y <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]}) || {};
                 if(tileAhead['passable']) {
                     y--;
                     this['moved'] = true;
@@ -71,7 +71,7 @@ var cameraHelper = (function() {
                 break;
             case 'south':
                 if(x >= map['cols']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]}) || {};
                 if(tileAhead['passable']) {
                     x++;
                     this['moved'] = true;
@@ -81,7 +81,7 @@ var cameraHelper = (function() {
                 break;
             case 'north':
                 if(x <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]}) || {};
                 if(tileAhead['passable']) {
                     x--;
                     this['moved'] = true;
@@ -91,7 +91,7 @@ var cameraHelper = (function() {
                 break;
             case 'west':
                 if(y >= map['rows']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]}) || {};
                 if(tileAhead['passable']) {
                     y++;
                     this['moved'] = true;
@@ -115,7 +115,7 @@ var cameraHelper = (function() {
         switch(heading) {
             case 'west':
                 if(y <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]}) || {};
                 if(tileAhead['passable']) {
                     y--;
                     this['moved'] = true;
@@ -125,7 +125,7 @@ var cameraHelper = (function() {
                 break;
             case 'north':
                 if(x >= map['cols']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]}) || {};
                 if(tileAhead['passable']) {
                     x++;
                     this['moved'] = true;
@@ -135,7 +135,7 @@ var cameraHelper = (function() {
                 break;
             case 'south':
                 if(x <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]}) || {};
                 if(tileAhead['passable']) {
                     x--;
                     this['moved'] = true;
@@ -145,7 +145,7 @@ var cameraHelper = (function() {
                 break;
             case 'east':
                 if(y >= map['rows']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]}) || {};
                 if(tileAhead['passable']) {
                     y++;
                     this['moved'] = true;
@@ -169,7 +169,7 @@ var cameraHelper = (function() {
         switch(heading) {
             case 'south':
                 if(y <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y-1][x]}) || {};
                 if(tileAhead['passable']) {
                     y--;
                     this['moved'] = true;
@@ -179,7 +179,7 @@ var cameraHelper = (function() {
                 break;
             case 'east':
                 if(x >= map['cols']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x-1]}) || {};
                 if(tileAhead['passable']) {
                     x--;
                     this['moved'] = true;
@@ -189,7 +189,7 @@ var cameraHelper = (function() {
                 break;
             case 'west':
                 if(x <= 0) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y][x+1]}) || {};
                 if(tileAhead['passable']) {
                     x++;
                     this['moved'] = true;
@@ -199,7 +199,7 @@ var cameraHelper = (function() {
                 break;
             case 'north':
                 if(y >= map['rows']-1) break;
-                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]});
+                var tileAhead = queryThings({map$char: map['_mapdata'][y+1][x]}) || {};
                 if(tileAhead['passable']) {
                     y++;
                     this['moved'] = true;
@@ -309,128 +309,144 @@ var cameraHelper = (function() {
 
         // 1
         f(); f(); f(); l(); l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['further$a']], {
                 x: align=='center'?x-w*0.355:x+w*0, y: y, width: w*0.29, height: h, align: align,
                 crop$x: 0,  crop$y: 0,  crop$width: Math.round(tw*0.29),  crop$height: th });
+            } catch(err) {}
         } }
 
         // 2
         r(); r(); r(); r();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['further$a']], {
                 x: align=='center'?x+w*0.355:x+w*0.71, y: y, width: w*0.29, height: h, align: align,
                 crop$x: Math.round(tw*0.71), crop$y: 0, crop$width: Math.round(tw*0.29), crop$height: th });
+            } catch(err) {}
         } }
 
         // 3
         l(); l(); l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['further$b']], {
                 x: align=='center'?x-w*0.25:x, y: y, width: w*0.5, height: h, align: align,
                 crop$x: 0, crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // 4
         r(); r();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['further$b']], {
                 x: align=='center'?x+w*0.25:x+w*0.5, y: y, width: w*0.5, height: h, align: align,
                 crop$x: Math.round(tw*0.5), crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // 5
         l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['further$a']], {
                 x: align=='center'?x:x+w*0.29, y: y, width: w*0.42, height: h, align: align,
                 crop$x: Math.round(tw*0.29), crop$y: 0, crop$width: Math.round(tw*0.42), crop$height: th });
+            } catch(err) {}
         } }
 
         // 6
         b(); l(); l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['far$a']], {
                 x: align=='center'?x-w*0.385:x+w*0, y: y, width: w*0.23, height: h, align: align,
                 crop$x: 0, crop$y: 0, crop$width: Math.round(tw*0.23), crop$height: th });
+            } catch(err) {}
         } }
 
         // 7
         r(); r(); r(); r();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['far$a']], {
                 x: align=='center'?x+w*0.385:x+w*0.77, y: y, width: w*0.23, height: h, align: align,
                 crop$x: Math.round(tw*0.77), crop$y: 0, crop$width: Math.round(tw*0.23), crop$height: th });
+            } catch(err) {}
         } }
 
         // 8
         l(); l(); l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['far$b']], {
                 x: align=='center'?x-w*0.25:x+w*0, y: y, width: w*0.5, height: h, align: align,
                 crop$x: 0, crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // 9
         r(); r();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['far$b']], {
                 x: align=='center'?x+w*0.25:x+w*0.5, y: y, width: w*0.5, height: h, align: align,
                 crop$x: Math.round(tw*0.5), crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // A
         l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['far$a']], {
                 x: align=='center'?x:x+w*0.23, y: y, width: w*0.54, height: h, align: align,
                 crop$x: Math.round(tw*0.23), crop$y: 0, crop$width: Math.round(tw*0.54), crop$height: th });
+            } catch(err) {}
         } }
 
         // B
         b(); l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['near$a']], {
                 x: align=='center'?x-w*0.25:x, y: y, width: w*0.5, height: h, align: align,
                 crop$x: 0, crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // C
         r(); r();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['near$a']], {
                 x: align=='center'?x+w*0.25:x+w*0.5, y: y, width: w*0.5, height: h, align: align,
                 crop$x: Math.round(tw*0.5), crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // D
         l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['near$b']], {
                 x: align=='center'?x:x, y: y, width: w, height: h, align: align });
+            } catch(err) {}
         } }
 
         // E
         b(); l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['here$a']], {
                 x: align=='center'?x-w*0.25:x, y: y, width: w*0.5, height: h, align: align,
                 crop$x: 0, crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // F
         r(); r();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['here$a']], {
                 x: align=='center'?x+w*0.25:x+w*0.5, y: y, width: w*0.5, height: h, align: align,
                 crop$x: Math.round(tw*0.5), crop$y: 0, crop$width: Math.round(tw*0.5), crop$height: th });
+            } catch(err) {}
         } }
 
         // G
         l();
-        if(mapdata[py]) { if(mapdata[py][px]) {
+        if(mapdata[py]) { if(mapdata[py][px]) { try {
             imageHelper.drawImage(ctx, images[queryThings({map$char: mapdata[py][px]})['here$b']], {
                 x: align=='center'?x:x, y: y, width: w, height: h, align: align });
+            } catch(err) {}
         } }
     };
 
