@@ -101,13 +101,13 @@
                 // If there's no CHARM for query or there is a CHARM for !query,
                     result.pop();
                     break;
-                } else if(things[i][key]) {
+                } else if(things[i][key] !== undefined) {
                 // If there's a CHARM for query
                     if(typeof query[key] === 'function') {
                     // Query query
                         // Replace pre-defined key names into key value
                         if(key === 'key' && _keybind[things[i][key]]) things[i][key] = _keybind[things[i][key]];
-                        if(!query[key](things[i][key])) {
+                        if(query[key](things[i][key]) !== true) {
                             result.pop();
                             break;
                         }
@@ -123,6 +123,7 @@
                 if(!things[i]['meta']) validIndexes.push(i);
             }
         }
+        console.log('result', result);
 
         // Rearrange things -- queried thing goes on top of others
         if(rearrange) {
@@ -162,9 +163,9 @@
             title:          'untitled',
             author:         'unknown',
             tick:           200,
-            font:           undefined,
-            'target$width':    800,
-            'target$height':   600,
+            font:           'VolterGoldfish',
+            target$width:   800,
+            target$height:  600,
             /* fixed-size:  true */
         });
 
@@ -322,7 +323,7 @@
                             wrap$width:     things[i]['wrap$width']     || 0,
                             wrap$height:    things[i]['wrap$height']    || 0,
                             text$align:     things[i]['text$align']     || 'start',
-                            font:           things[i]['font']           || 'Andale Mono',
+                            font:           things[i]['font']           || queryThings({meta:true})['font'],
                             font$size:      things[i]['font$size']      || 0.05,
                             font$color:     things[i]['font$color']     || '#ffffff'
                         };
