@@ -369,12 +369,26 @@
                     /* Play music on canvas
                         music ─┬─ play
                                ├─ pause
+                               ├─ stop
                                └─ no-loop   */
                     case 'music':
                         if(musics[things[i]['music']].paused) {
-                            if(things[i]['play'] && !things[i]['pause']) musics[things[i]['music']].play()
+                            if(things[i]['play']) {
+                                if(things[i]['stop']) {
+                                    musics[things[i]['music']].play();
+                                    delete things[i]['stop'];
+                                } else if(!things[i]['pause']) {
+                                    musics[things[i]['music']].play();
+                                }
+                            }
                         } else {
                             if(things[i]['pause']) musics[things[i]['music']].pause();
+                            if(things[i]['stop']) {
+                                musics[things[i]['music']].pause();
+                                musics[things[i]['music']].currentTime = 0;
+                                delete things[i]['play'];
+                                delete things[i]['pause'];
+                            }
                         }
                         break;
 
@@ -382,6 +396,7 @@
                         camera ─┬─ show
                                 ├─ at: @map
                                 ├─ on: @tile (read only)
+                                ├─ ahead: @tile (read only)
                                 ├─ x-pos: location on @map
                                 ├─ y-pos: location on @map
                                 └─ heading: "north" / "east" / "west" / "south"     */

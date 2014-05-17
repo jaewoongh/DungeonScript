@@ -47,6 +47,12 @@ var cameraHelper = (function() {
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});
+        switch(this['heading']) {
+            case 'north':   this['ahead'] = queryThings({map$char: map['_mapdata'][y-1][x]});   break;
+            case 'east':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x+1]});   break;
+            case 'west':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x-1]});   break;
+            case 'south':   this['ahead'] = queryThings({map$char: map['_mapdata'][y+1][x]});   break;
+        }
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['goforward'];
@@ -101,6 +107,12 @@ var cameraHelper = (function() {
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});
+        switch(this['heading']) {
+            case 'north':   this['ahead'] = queryThings({map$char: map['_mapdata'][y-1][x]});   break;
+            case 'east':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x+1]});   break;
+            case 'west':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x-1]});   break;
+            case 'south':   this['ahead'] = queryThings({map$char: map['_mapdata'][y+1][x]});   break;
+        }
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['goleft'];
@@ -155,6 +167,12 @@ var cameraHelper = (function() {
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});
+        switch(this['heading']) {
+            case 'north':   this['ahead'] = queryThings({map$char: map['_mapdata'][y-1][x]});   break;
+            case 'east':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x+1]});   break;
+            case 'west':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x-1]});   break;
+            case 'south':   this['ahead'] = queryThings({map$char: map['_mapdata'][y+1][x]});   break;
+        }
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['goright'];
@@ -209,6 +227,12 @@ var cameraHelper = (function() {
                 break;
         }
         this['on'] = queryThings({map$char: map['_mapdata'][y][x]});
+        switch(this['heading']) {
+            case 'north':   this['ahead'] = queryThings({map$char: map['_mapdata'][y-1][x]});   break;
+            case 'east':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x+1]});   break;
+            case 'west':    this['ahead'] = queryThings({map$char: map['_mapdata'][y][x-1]});   break;
+            case 'south':   this['ahead'] = queryThings({map$char: map['_mapdata'][y+1][x]});   break;
+        }
         this['x$pos'] = x;
         this['y$pos'] = y;
         delete this['gobackward'];
@@ -216,33 +240,42 @@ var cameraHelper = (function() {
     };
 
     var turnLeft = function() {
+        var map = this['at'];
+        var x = this['x$pos'];
+        var y = this['y$pos'];
         switch(this['heading']) {
-            case 'north':   this['heading'] = 'west';   break;
-            case 'east':    this['heading'] = 'north';  break;
-            case 'west':    this['heading'] = 'south';  break;
-            case 'south':   this['heading'] = 'east';   break;
+            case 'north':   this['heading'] = 'west';   this['ahead'] = queryThings({map$char: map['_mapdata'][y][x-1]});   break;
+            case 'east':    this['heading'] = 'north';  this['ahead'] = queryThings({map$char: map['_mapdata'][y-1][x]});   break;
+            case 'west':    this['heading'] = 'south';  this['ahead'] = queryThings({map$char: map['_mapdata'][y+1][x]});   break;
+            case 'south':   this['heading'] = 'east';   this['ahead'] = queryThings({map$char: map['_mapdata'][y][x+1]});   break;
         }
         delete this['turnleft'];
         return this;
     };
 
     var turnRight = function() {
+        var map = this['at'];
+        var x = this['x$pos'];
+        var y = this['y$pos'];
         switch(this['heading']) {
-            case 'north':   this['heading'] = 'east';   break;
-            case 'east':    this['heading'] = 'south';  break;
-            case 'west':    this['heading'] = 'north';  break;
-            case 'south':   this['heading'] = 'west';   break;
+            case 'north':   this['heading'] = 'east';   this['ahead'] = queryThings({map$char: map['_mapdata'][y][x-1]});   break;
+            case 'east':    this['heading'] = 'south';  this['ahead'] = queryThings({map$char: map['_mapdata'][y-1][x]});   break;
+            case 'west':    this['heading'] = 'north';  this['ahead'] = queryThings({map$char: map['_mapdata'][y+1][x]});   break;
+            case 'south':   this['heading'] = 'west';   this['ahead'] = queryThings({map$char: map['_mapdata'][y][x+1]});   break;
         }
         delete this['turnright'];
         return this;
     };
 
     var turnAround = function() {
+        var map = this['at'];
+        var x = this['x$pos'];
+        var y = this['y$pos'];
         switch(this['heading']) {
-            case 'north':   this['heading'] = 'south';  break;
-            case 'east':    this['heading'] = 'west';   break;
-            case 'west':    this['heading'] = 'east';   break;
-            case 'south':   this['heading'] = 'north';  break;
+            case 'north':   this['heading'] = 'south';  this['ahead'] = queryThings({map$char: map['_mapdata'][y][x-1]});   break;
+            case 'east':    this['heading'] = 'west';   this['ahead'] = queryThings({map$char: map['_mapdata'][y-1][x]});   break;
+            case 'west':    this['heading'] = 'east';   this['ahead'] = queryThings({map$char: map['_mapdata'][y+1][x]});   break;
+            case 'south':   this['heading'] = 'north';  this['ahead'] = queryThings({map$char: map['_mapdata'][y][x+1]});   break;
         }
         delete this['turnaround'];
         return this;

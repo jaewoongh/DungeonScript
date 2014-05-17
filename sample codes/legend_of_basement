@@ -31,9 +31,14 @@ SET ============================================================================
 { txt-lower-right, x:0.95, y:0.7, text-align:"right" }
 
 ☃ Title screen ☃
-{ img-cover, image:"/assets/images/yad_cover.png", x:0.5, y:0.5, width:1.0 }
-{ txt-press, text:"PRESS ACTION KEY", x:0.1, y:0.81, font-size:0.05 }
-{ txt-keys, text:"[x] action\n[z] cancel\n[arrow] move", x:0.1, y:0.85, font-size:0.03 }
+{ img-cover, image:"/assets/images/lob_cover.png", x:0.5, y:0.5, width:1.0 }
+{ txt-title, text: "LEGEND OF\nBASEMENT", x:0.05, y:0.15, font-size:0.08 }
+{ txt-press, text:"PRESS ACTION KEY", x:0.05, y:0.81, font-size:0.03 }
+{ txt-keys, text:"[x] action\n[z] cancel\n[arrow] move", x:0.06, y:0.85, font-size:0.03 }
+
+☃ Basement shelter ☃
+{ img-shelter, image:"/assets/images/lob_basement.png", x:0.5, y:0.5, width:1.0 }
+{ txt-synop, x:0.5, y:0.5, text-align:"center" }
 
 ☃ Tile images ☃
 { tile-images,
@@ -79,6 +84,20 @@ SET ============================================================================
   further-a:@tile-images.crack-ua
 }
 
+{ tile, t-dungeon-stairdown, passable:false, map-char:">",
+  here-a:   @tile-images.crack-ha
+  near-b:   @tile-images.crack-nb
+  far-a:    @tile-images.crack-fa
+  further-a:@tile-images.crack-ua
+}
+
+{ tile, t-dungeon-stairup, passable:false, map-char:"<",
+  here-a:   @tile-images.crack-ha
+  near-b:   @tile-images.crack-nb
+  far-a:    @tile-images.crack-fa
+  further-a:@tile-images.crack-ua
+}
+
 { tile, t-dungeon-wall, passable:false, map-char:"#",
   here-a:   @tile-images.wall-ha
   near-a:   @tile-images.wall-na
@@ -101,7 +120,14 @@ SET ============================================================================
 }
 
 ☃ Map ☃
-{ map, dungeon-b1, cols:30, rows:15,
+{ map, dungeon-b1, cols:15, rows:5,
+  tiles:"###############
+         #####.....#####
+         =.....###.....>
+         ########..#####
+         ###############"
+}
+{ map, dungeon-b2, cols:30, rows:15,
   tiles:"##############################
          #######.....###.....##########
          #######.....###.....###.....=#
@@ -109,12 +135,12 @@ SET ============================================================================
          ####.####.#######.#####.######
          ###....##.#######.#####..%####
          ######.#...#####...######...##
-         =........#...#...#...#.......#
+         <........#...#...#...#.......#
          ######.#####...#####...##...##
-         ###....######.#######.########
-         ####.########.#######.########
-         ####.######.....###.....######
-         ###########.....###.....######
+         ###....######.#######.#####.##
+         ####.########.#######.#####.##
+         ####.######.....###.....###.##
+         ###########.....###.....###>##
          ###########.....###.....######
          ##############################"
 }
@@ -134,6 +160,24 @@ SET ============================================================================
   x:0.5, y:0.5, width:1, height:1
   hp:15, hp-max:15, attack:3, defense:1 }
 
+☃ Musics ☃
+{ mus-title, music:"/assets/musics/Tom_Woxom_-_03_-_LICHT.mp3" }
+{ mus-shelter, music:"/assets/musics/OBE_-_03_-_Molten_Lava.mp3" }
+{ mus-deep, music:"/assets/musics/SKGB_-_03_-_You_Already_Know.mp3" }
+
+☃ Sounds ☃
+{ snd-step, sound:"/assets/sounds/step.wav" }
+{ snd-block, sound:"/assets/sounds/block.wav" }
+{ snd-encounter, sound:"/assets/sounds/encounter.wav" }
+{ snd-hit, sound:"/assets/sounds/hit.wav" }
+{ snd-hurt, sound:"/assets/sounds/hurt.wav" }
+{ snd-miss, sound:"/assets/sounds/miss.wav" }
+{ snd-win, sound:"/assets/sounds/win.wav" }
+{ snd-stair, sound:"/assets/sounds/stair.wav" }
+{ snd-blip, sound:"/assets/sounds/blip.wav" }
+{ snd-closing, sound:"/assets/sounds/closing.wav" }
+{ snd-rest, sound:"/assets/sounds/rest.wav" }
+
 
 
 
@@ -144,29 +188,99 @@ RUN ============================================================================
 gamephase="start" {
   img-cover, !show { .show }
   txt-keys, !show { .show }
-  txt-press, !show { .show }
+  txt-press, !show <~ { .show }
+  txt-title, !show { .show }
   gamephase { .gamephase:"title" }
+  mus-title { .play }
 }
 
 ☃ Rules for title phase ☃
-gamephase="title" {
-  key="action" {
-    camera <~ { .at:@dungeon-b1, .x-pos:1, .y-pos:7, .heading:"east", .show }
-    dungeon-b1 <~ { .now-at }
-    gamephase <~ { .gamephase:"navigation" }
-    img-cover <~ { .show:remove }
-    txt-keys <~ { .show:remove }
-    txt-press { .show:remove }
+gamephase="title", key="action" {
+  .gamephase:"synopsis", .synopphase:1,
+  img-cover { .show:remove }
+  txt-keys { .show:remove }
+  txt-press { .show:remove }
+  txt-title { .show:remove }
+  mus-title { .stop }
+  snd-closing <~ { .trigger }
+}
+
+☃ Synopsis ☃
+gamephase="synopsis" {
+  synopphase=1 { txt-synop { .text:"I am trapped here in the basement.", .show } }
+  synopphase=2 { txt-synop { .text:"The door seems to be locked from outside.\nGood that I have enough stock here." } }
+  synopphase=3 { txt-synop { .text:"There is a big crack on the wall,\nwhich I've never seen before." } }
+  synopphase=4 { txt-synop { .text:"Ill light beamed through the crack,\nand there's no way going back." } }
+  synopphase=5 {
+    gamephase <~ { .gamephase:"shelter", .synopphase:remove }
+    txt-synop <~ { .show:remove }
   }
+}
+gamephase="synopsis", key="action" <~ { .synopphase:(.synopphase + 1), snd-blip { .trigger } }
+
+☃ Shelter ☃
+gamephase="shelter" {
+  img-shelter, !show { .show }
+  mus-shelter, !play { .play }
+  txt-upper-left {
+    .font-color:"#ffffff"
+    player, hp<(@player.hp-max * 0.2) { ~font-color:"#ff7733" },
+    .text:("Your Health\n" + @player.hp + "/" + @player.hp-max),
+    .font-size:0.05, .show
+  }
+  txt-lower-left { .text:("[action]\nRest\n\n[cancel]\nGo into the crack"),
+                   .font-size:0.04, .show }
+}
+gamephase="shelter", key="action" <~ {
+  snd-rest { .trigger },
+  player { .hp:.hp-max }
+}
+gamephase="shelter", key="cancel" <~ {
+  img-shelter { .show:remove }
+  mus-shelter { .stop }
+  camera <~ { .at:@dungeon-b1, .x-pos:1, .y-pos:2, .heading:"east", .show }
+  dungeon-b1 <~ { .now-at }
+  gamephase <~ { .gamephase:"navigation" }
+  snd-stair { .trigger }
 }
 
 ☃ Rules for map navigation ☃
 gamephase="navigation" {
+  camera <~ { .width:(.width + (1 - .width) * 0.7), .height:(.height + (1 - .height) * 0.7) }
   camera, key="up" { .goforward }
   camera, key="down" { .gobackward }
   camera, key="left" { .turnleft  }
   camera, key="right" { .turnright }
-  camera, moved { encounter { .encounter:(.encounter + random * 5) }, .moved:remove }
+  camera, moved {
+    snd-step { .trigger },
+    encounter { .encounter:(.encounter + random * 5) },
+    .moved:remove
+  }
+  camera, blocked, ahead=@t-dungeon-crack <~ {
+    snd-stair { .trigger },
+    .show:remove,
+    now-at { .now-at:remove },
+    gamephase { .gamephase:"shelter" }
+  }
+  camera, blocked, ahead=@t-dungeon-wall <~ {
+    snd-block { .trigger },
+    camera <~ { .width:1.02, .height:1.02 }
+  }
+  camera, blocked, ahead=@t-dungeon-stairdown, at=@dungeon-b1 <~ {
+    snd-stair { .trigger },
+    dungeon-b1 <~ { .now-at:remove },
+    dungeon-b2 <~ { .now-at },
+    camera <~ { .at:@dungeon-b2, .x-pos:1, .y-pos:7, .heading:"east" }
+    mus-deep <~ { .play }
+  }
+  camera, blocked, ahead=@t-dungeon-stairup, at=@dungeon-b2 <~ {
+    snd-stair { .trigger },
+    dungeon-b2 <~ { .now-at:remove },
+    dungeon-b1 <~ { .now-at },
+    camera <~ { .at:@dungeon-b1, .x-pos:13, .y-pos:2, .heading:"west" }
+    mus-deep <~ { .stop }
+  }
+  camera, blocked <~ { .blocked:remove }
 
   txt-lower-left { .text:("[action]\n\n\n[cancel]\nStatus"),
                    .font-size:0.04, .show }
@@ -177,7 +291,7 @@ gamephase="navigation" {
   keymon, key="right" { .text:"↱", .show, .x:0.5, .y:0.5, .font-size:0.06 }
   keymon, show <~ { .show:remove }
 
-  encounter>20 { .encounter:0, gamephase { .gamephase:"into-battle" } }
+  encounter>20 { .encounter:0, gamephase { .gamephase:"into-battle" }, snd-encounter { .trigger } }
 }
 
 ☃ Rules for battle phase ☃
@@ -218,8 +332,8 @@ gamephase="battle", battlephase="myturn" {
   player, key="action", !attacked {
     .attacked
     now-battling { .damage:(~weapon.attack + dice4 - 2) }
-    now-battling, damage>0 { .hp:(.hp - .damage), .x:(.x + 0.02), .damage:remove }
-    now-battling, damage<=0 { .damage:remove }
+    now-battling, damage>0 { .hp:(.hp - .damage), .x:(.x + 0.02), .damage:remove, snd-hit { .trigger } }
+    now-battling, damage<=0 { .damage:remove, snd-miss { .triger } }
   }
 
   player, attacked {
@@ -230,20 +344,27 @@ gamephase="battle", battlephase="myturn" {
       gamephase <~ { .gamephase:"navigation" }
       player <~ { .attacked:remove }
       camera <~ { .width:1, .height:1 }
+      snd-win { .trigger }
+      text { .show:remove }
     }
     now-battling, hp>0, x<0.501 { gamephase <~ { .battlephase:"yourturn" } }
   }
 }
 
 gamephase="battle", battlephase="yourturn" {
-  now-battling { 
+  now-battling {
     player, hp>0 {
       .damage:(~attack + dice4 - .weapon.defense - dice4)
       .attacked:remove
     }
   },
-  player, damage>0 { .hp:(.hp - .damage), camera <~ { .width:1.02, .height:1.02 }, .damage:remove }
-  player, damage<= 0 { .damage:remove }
+  player, damage>0 {
+    .hp:(.hp - .damage),
+    camera <~ { .width:1.02, .height:1.02 },
+    snd-hurt { .trigger },
+    .damage:remove
+  }
+  player, damage<= 0 { .damage:remove, snd-miss { .trigger } }
   player, hp<=0 { .hp:0, .dead }
   player, dead <~ {
     camera, width<1.001, height<1.001 <~ {
