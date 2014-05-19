@@ -420,6 +420,35 @@
                             if(things[i]['turnright']) cameraHelper.turnRight.call(things[i]);
                             if(things[i]['turnaround']) cameraHelper.turnAround.call(things[i]);
                         }
+                        if(typeof things[i]['ahead'] === 'string' && things[i]['ahead'].length === 1) {
+                            try {
+                                switch(things[i]['heading']) {
+                                    case 'north':   things[i]['at']['_mapdata'][things[i]['y$pos']-1][things[i]['x$pos']] = things[i]['ahead']; break;
+                                    case 'east':   things[i]['at']['_mapdata'][things[i]['y$pos']][things[i]['x$pos']+1] = things[i]['ahead']; break;
+                                    case 'west':   things[i]['at']['_mapdata'][things[i]['y$pos']][things[i]['x$pos']-1] = things[i]['ahead']; break;
+                                    case 'south':   things[i]['at']['_mapdata'][things[i]['y$pos']+1][things[i]['x$pos']] = things[i]['ahead']; break;
+                                }
+                            } catch(err) {}
+                        }
+                        break;
+
+                    case 'tile':
+                        if(things[i]['change$char']) {
+                            var map = queryThings({camera:true})['at'];
+                            map['tiles'] = map['tiles'].replace(things[i]['map$char'], things[i]['change$char']);
+                            // things[i]['map$char'] = things[i]['change$char'];
+
+                            for(var y = 0; y < map['rows']; y++) {
+                                for(var x = 0; x < map['cols']; x++) {
+                                    if(map['_mapdata'][y][x] === things[i]['map$char']) {
+                                        console.log('change', map['_mapdata'][y][x], things[i]['map$char']);
+                                        map['_mapdata'][y][x] = things[i]['change$char'];
+                                    }
+                                }
+                            }
+
+                            delete things[i]['change$char'];
+                        }
                         break;
 
                     case 'console':
