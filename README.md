@@ -1,3 +1,6 @@
+I currently stopped updating this project.  
+I don't think I can work on this project any time soon :(
+
 DungeonScript
 =============
 version 0.0.11 (May 2014)
@@ -26,9 +29,5 @@ Development
 * May 12 (0.0.11) -- Rewrote parser to support flexible charmings and maths
 * May 11 (0.0.10) -- Version numbering finally has been started
 
-Legal
------
-Copyright © 2014 Jaewoong Hwang  
-No public license is considered for the project yet at this point.
 
 Contains PEGjs, sugarjs, jquery, and bootstrap.
